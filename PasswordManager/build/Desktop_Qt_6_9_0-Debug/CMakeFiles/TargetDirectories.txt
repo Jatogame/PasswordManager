@@ -1,0 +1,9 @@
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/PasswordManager.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/edit_cache.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/rebuild_cache.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/list_install_components.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/install.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/install/local.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/install/strip.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/PasswordManager_autogen_timestamp_deps.dir
+/home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/CMakeFiles/PasswordManager_autogen.dir
