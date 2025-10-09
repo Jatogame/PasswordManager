@@ -1,1 +1,26 @@
+# Build files
+/build*/
+*.pro.user
+*.cmake.user
+*.autosave
 
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.app
+*.out
+
+# Temporary / Logs
+*.log
+*.tmp
+
+# Qt Creator specific
+*.user
+*.user.*

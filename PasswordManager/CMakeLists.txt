@@ -2,15 +2,20 @@ cmake_minimum_required(VERSION 3.19)
 project(PasswordManager LANGUAGES CXX)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
 
 qt_standard_project_setup()
 
 qt_add_executable(PasswordManager
     WIN32 MACOSX_BUNDLE
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+    src/main.cpp
+    src/mainwindow.cpp
+    include/mainwindow.h
+    ui/mainwindow.ui
+
+    include/MasterPasswordDialog.h
+    src/MasterPasswordDialog.cpp
 )
 
 target_link_libraries(PasswordManager
