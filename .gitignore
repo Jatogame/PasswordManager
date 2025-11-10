@@ -1,5 +1,8 @@
 # Build files
-/build*/
+*/build/*
+cmake-build/*
+build*/
+/build
 *.pro.user
 *.cmake.user
 *.autosave

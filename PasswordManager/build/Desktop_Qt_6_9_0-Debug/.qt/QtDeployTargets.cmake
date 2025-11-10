@@ -1,2 +1,0 @@
-set(__QT_DEPLOY_TARGET_PasswordManager_FILE /home/jakali/Documents/programmieren/PasswortManager/PasswordManager/build/Desktop_Qt_6_9_0-Debug/PasswordManager)
-set(__QT_DEPLOY_TARGET_PasswordManager_TYPE EXECUTABLE)
