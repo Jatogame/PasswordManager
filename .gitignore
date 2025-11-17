@@ -6,6 +6,7 @@ build*/
 *.pro.user
 *.cmake.user
 *.autosave
+*/.vscode/*
 
 # CMake
 CMakeFiles/
