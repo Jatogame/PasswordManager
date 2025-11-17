@@ -16,6 +16,7 @@ qt_add_executable(PasswordManager
 
     include/MasterPasswordDialog.h
     src/MasterPasswordDialog.cpp
+
 )
 
 target_link_libraries(PasswordManager
