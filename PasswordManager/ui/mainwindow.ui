@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1121</width>
+    <width>1122</width>
     <height>615</height>
    </rect>
   </property>
@@ -35,10 +35,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <property name="spacing">
-     <number>0</number>
-    </property>
+   <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -51,7 +48,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
+    <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
       <property name="spacing">
        <number>0</number>
@@ -102,7 +99,7 @@
           <number>0</number>
          </property>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="sidebar_verticalLayout">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -110,7 +107,7 @@
             <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
            </property>
            <item alignment="Qt::AlignmentFlag::AlignHCenter">
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="sidebar_label">
              <property name="minimumSize">
               <size>
                <width>40</width>
@@ -123,7 +120,7 @@
             </widget>
            </item>
            <item alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="sidebar_passwords">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -136,7 +133,7 @@
             </widget>
            </item>
            <item alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="sidebar_healthcheck">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -144,12 +141,12 @@
               </size>
              </property>
              <property name="text">
-              <string>Check</string>
+              <string>Health Check</string>
              </property>
             </widget>
            </item>
            <item alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QPushButton" name="pushButton_6">
+            <widget class="QPushButton" name="sidebar_passwordgenerator">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -157,12 +154,12 @@
               </size>
              </property>
              <property name="text">
-              <string>IDK</string>
+              <string>Password Generator</string>
              </property>
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer">
+            <spacer name="sidebar_verticalSpacer">
              <property name="orientation">
               <enum>Qt::Orientation::Vertical</enum>
              </property>
@@ -178,7 +175,7 @@
             </spacer>
            </item>
            <item alignment="Qt::AlignmentFlag::AlignBottom">
-            <widget class="QPushButton" name="pushButton_7">
+            <widget class="QPushButton" name="sidebar_settings">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -187,6 +184,19 @@
              </property>
              <property name="text">
               <string>Settings</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="sidebar_lock">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Lock</string>
              </property>
             </widget>
            </item>
@@ -204,127 +214,115 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>3</number>
         </property>
-        <widget class="QWidget" name="page">
+        <widget class="QWidget" name="passwords">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <widget class="QWidget" name="gridLayoutWidget">
+         <widget class="QWidget" name="widget" native="true">
           <property name="geometry">
            <rect>
-            <x>9</x>
-            <y>9</y>
-            <width>691</width>
-            <height>511</height>
+            <x>10</x>
+            <y>10</y>
+            <width>871</width>
+            <height>591</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <property name="sizeConstraint">
-            <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
-           </property>
-           <item row="1" column="0">
-            <widget class="QPushButton" name="pushButton_3">
-             <property name="text">
-              <string>PushButton</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>PushButton</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="pushButton_8">
-             <property name="text">
-              <string>PushButton</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QPushButton" name="pushButton_9">
-             <property name="text">
-              <string>PushButton</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(50, 50, 50);</string>
+          </property>
          </widget>
         </widget>
-        <widget class="QWidget" name="page_2">
+        <widget class="QWidget" name="healthcheck">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <property name="sizeConstraint">
-             <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QPushButton" name="pushButton_10">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_11">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QWidget" name="widget_2" native="true">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>871</width>
+            <height>591</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(50, 50, 50);</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="passwordgenerator">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <widget class="QWidget" name="widget_3" native="true">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>871</width>
+            <height>591</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(50, 50, 50);</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="settings">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <widget class="QWidget" name="widget_4" native="true">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>871</width>
+            <height>591</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(50, 50, 50);</string>
+          </property>
+         </widget>
         </widget>
        </widget>
       </item>
