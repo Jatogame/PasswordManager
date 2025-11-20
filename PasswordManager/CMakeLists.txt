@@ -14,8 +14,8 @@ qt_add_executable(PasswordManager
     include/mainwindow.h
     ui/mainwindow.ui
 
-    include/MasterPasswordDialog.h
-    src/MasterPasswordDialog.cpp
+
+
 
 )
 

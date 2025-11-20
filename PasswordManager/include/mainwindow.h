@@ -17,6 +17,17 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_sidebar_passwords_clicked();
+
+    void on_sidebar_healthcheck_clicked();
+
+    void on_sidebar_passwordgenerator_clicked();
+
+    void on_sidebar_settings_clicked();
+
+    void on_sidebar_lock_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
