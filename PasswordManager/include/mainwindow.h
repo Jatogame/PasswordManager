@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    //When opening the Application, open it in lock screen
+    void open_locked();
 
 private slots:
     void on_sidebar_passwords_clicked();

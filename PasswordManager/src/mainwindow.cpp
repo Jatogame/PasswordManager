@@ -13,6 +13,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::open_locked()
+{
+    ui->sidebar_lock->click();
+}
+
 //Page navigation (stacked Widget)
 
 void MainWindow::on_sidebar_lock_clicked()
