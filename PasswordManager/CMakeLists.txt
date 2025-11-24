@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(PasswordManager LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Sql)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
 
@@ -13,6 +13,8 @@ qt_add_executable(PasswordManager
     src/mainwindow.cpp
     include/mainwindow.h
     ui/mainwindow.ui
+    src/dbmanager.cpp
+    include/dbmanager.h
 
 
 
@@ -23,6 +25,7 @@ target_link_libraries(PasswordManager
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::Sql
 )
 
 include(GNUInstallDirs)
