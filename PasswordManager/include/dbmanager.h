@@ -9,7 +9,7 @@ class DatabaseManager : public QObject
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
 
-    bool createDatabase();
+    bool createDatabase(const QString &filePath, const QString &masterPassword);
     // Core functions that do NOT need UI access
     //bool createNewDatabase(const QString& dbFilePath, const QString& connectionName);
     //bool createPasswordTable(const QString& connectionName);

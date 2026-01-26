@@ -95,22 +95,22 @@ void MainWindow::on_newdb_clicked()
 //display the selected path for the new database
 void MainWindow::on_createdb_selectpath_clicked()
 {
-    QString path = QFileDialog::getSaveFileName(
+    QString pathCreate = QFileDialog::getSaveFileName(
         this,
         "Create New Database",
         QDir::homePath(),
-        "Password Vault (*.db)"
+        "JaPass Vault (*.japass1)"
         );
 
-    if (path.isEmpty())
+    if (pathCreate.isEmpty())
         return;
 
-    QFileInfo info(path);
-    if (info.suffix().toLower() != "db") {
-        path += ".db";
+    QFileInfo info(pathCreate);
+    if (info.suffix().toLower() != "japass1") {
+        pathCreate += ".japass1";
     }
 
-    ui->createdb_displaypath->setText(path);
+    ui->createdb_displaypath->setText(pathCreate);
 }
 
 //Cancel the creation of a new database
@@ -147,9 +147,26 @@ void MainWindow::on_createdb_create_clicked()
         return;
     }
 
-    if(m_dbManager->createDatabase() == true){
+    if (m_dbManager->createDatabase(filePath, masterPassword)==true){
 
-    } else{
+        } else{
 
     }
 }
+
+//select path for unlocking
+void MainWindow::on_lock_selectdb_clicked()
+{
+    QString pathSelect = QFileDialog::getOpenFileName(
+        this,
+        "Select Database",
+        QDir::homePath(),
+        "JaPass Vault (*.japass1)"
+        );
+
+    if (pathSelect.isEmpty())
+        return;
+
+    ui->lock_displaypath->setText(pathSelect);
+}
+
