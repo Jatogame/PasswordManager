@@ -40,6 +40,8 @@ private slots:
 
     void on_createdb_selectpath_clicked();
 
+    void on_lock_selectdb_clicked();
+
 private:
     Ui::MainWindow *ui;
     DatabaseManager *m_dbManager;
