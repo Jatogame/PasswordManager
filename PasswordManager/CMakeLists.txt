@@ -15,10 +15,14 @@ qt_add_executable(PasswordManager
     ui/mainwindow.ui
     src/dbmanager.cpp
     include/dbmanager.h
-    include/cryptographicEngine.h
-    include/keyDerivation.h
-    include/secureBuffer.h
-    include/vault.h
+
+
+
+
+    src/readfile.cpp
+    src/createfile.cpp
+    include/dbHeader.h
+    src/savefile.cpp
 
 
 
