@@ -147,7 +147,7 @@ void MainWindow::on_createdb_create_clicked()
         return;
     }
 
-    if (m_dbManager->createDatabase(filePath, masterPassword)==true){
+    if (createDatabase(filePath, masterPassword)==true){
 
         } else{
 
