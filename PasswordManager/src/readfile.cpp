@@ -1,7 +1,9 @@
+/*
 #include <QSqlDatabase>
 #include <QFile>
 #include <sqlite3.h>
 #include <QtSql/QSqlDriver>
+#include "dbHeader.h"
 
 bool loadEncryptedDb(const QString &path, const QByteArray &key) {
     QFile file(path);
@@ -34,3 +36,4 @@ bool loadEncryptedDb(const QString &path, const QByteArray &key) {
     }
     return true;
 }
+*/

@@ -23,6 +23,9 @@ qt_add_executable(PasswordManager
     src/createfile.cpp
     include/dbHeader.h
     src/savefile.cpp
+    src/encryptfile.cpp
+    src/derivePassword.cpp
+
 
 
 

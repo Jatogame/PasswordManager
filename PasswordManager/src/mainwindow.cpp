@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dbmanager.h"
+#include "dbHeader.h"
 #include <QDir>
 #include <QFileDialog>
 #include <QSqlDatabase>
@@ -133,8 +134,8 @@ void MainWindow::on_createdb_create_clicked()
 
     //get inputs
     QString filePath = ui->createdb_displaypath->toPlainText();
-    QString masterPassword = ui->createdb_mp1->text();
-    QString confirmPassword = ui->createdb_mp2->text();
+    QString masterPasswordStr = ui->createdb_mp1->text();
+    QString confirmPasswordStr = ui->createdb_mp2->text();
 
     //check, that file path isn't empty
     if (filePath.isEmpty()) {
@@ -142,16 +143,30 @@ void MainWindow::on_createdb_create_clicked()
         return;
     }
     //check if passwords match
-    if (masterPassword != confirmPassword) {
+    if (masterPasswordStr != confirmPasswordStr) {
         ui->createdb_error->setText("Passwords don't match");
         return;
     }
+    QByteArray masterPassword = masterPasswordStr.toUtf8();
+    //save data to create file
+    RunTimeData runTime;
+    derivePassword(masterPassword);
+    runTime.filePath = filePath;
 
-    if (createDatabase(filePath, masterPassword)==true){
-
+    if (createFile()==true){
+        //go to Lock page
+        ui->stackedWidget->setCurrentIndex(0);
+        //clear the inputs
+        ui->createdb_displaypath->clear();
+        ui->createdb_mp1->clear();
+        ui->createdb_mp2->clear();
+        ui->createdb_error->clear();
         } else{
-
+        ui->createdb_error->setText("Failed to create Database");
     }
+    //delete saved inputs
+    runTime.derPass = "";
+    runTime.filePath = "";
 }
 
 //select path for unlocking
