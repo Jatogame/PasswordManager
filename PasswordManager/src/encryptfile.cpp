@@ -3,7 +3,6 @@
 #include <QSqlDatabase>
 #include "dbHeader.h"
 
-bool createFile(){
+void encryptDB(){
 
-    return true;
-}
+};

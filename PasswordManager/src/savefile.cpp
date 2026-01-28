@@ -1,10 +1,20 @@
 #include <QFile>
 #include <QDataStream>
 #include <QByteArray>
+#include "dbHeader.h"
 
-void saveDatabase(const QString &fileName, const QByteArray &encryptedSQLite,
-                  const QByteArray &salt, const QByteArray &nonce, const QByteArray &authTag) {
-    QFile file(fileName);
+void saveDatabase() {
+
+    //take data from struct
+    DbHeader metaData;
+    RunTimeData runTime;
+
+    //encrypt data
+    QByteArray encryptedSQLite;
+
+    encryptDB();
+
+    QFile file(runTime.filePath);
     if (!file.open(QIODevice::WriteOnly)) return;
 
     QDataStream out(&file);
@@ -15,25 +25,25 @@ void saveDatabase(const QString &fileName, const QByteArray &encryptedSQLite,
     file.write("JAPASSDB", 8);
 
     // 2. Version (Tag 0x02)
-    out << (quint8)0x02 << (quint16)2 << (quint16)1;
+    out << (quint8)0x02 << (quint16)2 << metaData.version;
 
     // 3. Argon2 Salt (Tag 0x03)
-    out << (quint8)0x03 << (quint16)salt.size();
-    file.write(salt);
+    out << (quint8)0x03 << (quint16)metaData.salt.size();
+    file.write(metaData.salt);
 
     // 4. Argon2 Params (Tag 0x04) - 12 Bytes
     out << (quint8)0x04 << (quint16)12;
-    out << (quint32)20;      // Iterationen
-    out << (quint32)2097152; // 2GB RAM in KiB
-    out << (quint32)1;       // Parallelism
+    out << metaData.iterations;     // Iterationen
+    out << metaData.memoryCost;     // 2GB RAM in KiB
+    out << metaData.parallelism;    // Parallelism
 
     // 5. ChaCha20 Nonce (Tag 0x05)
-    out << (quint8)0x05 << (quint16)nonce.size();
-    file.write(nonce);
+    out << (quint8)0x05 << (quint16)metaData.nonce.size();
+    file.write(metaData.nonce);
 
     // 6. Auth-Tag (Tag 0x06)
-    out << (quint8)0x06 << (quint16)authTag.size();
-    file.write(authTag);
+    out << (quint8)0x06 << (quint16)metaData.authTag.size();
+    file.write(metaData.authTag);
 
     // 7. Die verschlüsselten SQLite Daten (Payload)
     file.write(encryptedSQLite);
