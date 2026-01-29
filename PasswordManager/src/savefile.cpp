@@ -5,10 +5,6 @@
 
 void saveDatabase() {
 
-    //take data from struct
-    DbHeader metaData;
-    RunTimeData runTime;
-
     //encrypt data
     QByteArray encryptedSQLite;
 

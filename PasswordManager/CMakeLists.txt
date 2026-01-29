@@ -5,6 +5,9 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Sql)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SODIUM REQUIRED libsodium)
+
 qt_standard_project_setup()
 
 qt_add_executable(PasswordManager
@@ -25,12 +28,16 @@ qt_add_executable(PasswordManager
     src/savefile.cpp
     src/encryptfile.cpp
     src/derivePassword.cpp
+    src/datasets.cpp
 
 
 
 
 
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${SODIUM_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SODIUM_LIBRARIES})
 
 target_link_libraries(PasswordManager
     PRIVATE

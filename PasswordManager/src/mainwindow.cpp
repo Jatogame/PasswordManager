@@ -149,7 +149,6 @@ void MainWindow::on_createdb_create_clicked()
     }
     QByteArray masterPassword = masterPasswordStr.toUtf8();
     //save data to create file
-    RunTimeData runTime;
     derivePassword(masterPassword);
     runTime.filePath = filePath;
 

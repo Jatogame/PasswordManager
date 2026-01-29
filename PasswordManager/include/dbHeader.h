@@ -9,7 +9,7 @@ struct DbHeader {
     const uint16_t version = 1;
     QByteArray salt;      // 16 Bytes
     const uint32_t iterations = 20;
-    const uint32_t memoryCost = 2097152; // 2GB
+    const uint32_t memoryCost = 2147483648; // 2GB, but carefull with overflow
     const uint32_t parallelism = 1;
     QByteArray nonce;     // 12 Bytes
     QByteArray authTag;   // 16 Bytes
@@ -22,6 +22,9 @@ struct RunTimeData {
     //derived Password
     QByteArray derPass;
 };
+//make access to structs global
+extern RunTimeData runTime;
+extern DbHeader metaData;
 
 bool createFile();
 bool loadEncryptedDb(const QString &path, const QByteArray &key);
