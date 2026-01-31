@@ -8,7 +8,7 @@
 struct DbHeader {
     const uint16_t version = 1;
     QByteArray salt;      // 16 Bytes
-    const uint32_t iterations = 20;
+    const uint32_t iterations = 10;
     const uint32_t memoryCost = 2147483648; // 2GB, but carefull with overflow
     const uint32_t parallelism = 1;
     QByteArray nonce;     // 12 Bytes
@@ -30,6 +30,6 @@ bool createFile();
 bool loadEncryptedDb(const QString &path, const QByteArray &key);
 void saveDatabase();
 void encryptDB();
-void derivePassword(QByteArray masterPassword);
+bool createDerPassword(QByteArray masterPassword);
 
 #endif // DBHEADER_H
