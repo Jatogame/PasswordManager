@@ -4,7 +4,7 @@
 #include "dbHeader.h"
 #include <sodium.h>
 
-void derivePassword(QByteArray masterPassword){
+bool createDerPassword(QByteArray masterPassword){
 
     //use argon2id to derive password
     QByteArray derPassword (32, 0); //32 Bytes for ChaCha20
@@ -26,6 +26,11 @@ void derivePassword(QByteArray masterPassword){
         crypto_pwhash_ALG_ARGON2ID13
         );
 
+    if(result != 0){
+        return false;
+    }
+
     //save derived password
     runTime.derPass = derPassword;
+    return true;
 };

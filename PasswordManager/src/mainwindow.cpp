@@ -147,9 +147,15 @@ void MainWindow::on_createdb_create_clicked()
         ui->createdb_error->setText("Passwords don't match");
         return;
     }
+    //turn datatype to QByteArray (needed to handle it in function)
     QByteArray masterPassword = masterPasswordStr.toUtf8();
-    //save data to create file
-    derivePassword(masterPassword);
+    //key derivation
+    if (createDerPassword(masterPassword) != true){
+        ui->createdb_error->setText("Error: Key Derivation");
+        return;
+    }
+    //save the filePath to use it in function
+    masterPassword = "";
     runTime.filePath = filePath;
 
     if (createFile()==true){
@@ -164,6 +170,9 @@ void MainWindow::on_createdb_create_clicked()
         ui->createdb_error->setText("Failed to create Database");
     }
     //delete saved inputs
+    masterPassword = "";
+    masterPasswordStr = "";
+    confirmPasswordStr = "";
     runTime.derPass = "";
     runTime.filePath = "";
 }
