@@ -6,8 +6,6 @@
 void saveDatabase() {
 
     //encrypt data
-    QByteArray encryptedSQLite;
-
     encryptDB();
 
     QFile file(runTime.filePath);
@@ -18,31 +16,32 @@ void saveDatabase() {
 
     // 1. Magic ID (Tag 0x01)
     out << (quint8)0x01 << (quint16)8;
-    file.write("JAPASSDB", 8);
+    out.writeRawData("JAPASSDB", 8);
 
     // 2. Version (Tag 0x02)
-    out << (quint8)0x02 << (quint16)2 << metaData.version;
+    out << (quint8)0x02 << (quint16)4 << (quint32)metaData.version;
 
     // 3. Argon2 Salt (Tag 0x03)
     out << (quint8)0x03 << (quint16)metaData.salt.size();
-    file.write(metaData.salt);
+    out.writeRawData(metaData.salt.constData(), metaData.salt.size());
 
     // 4. Argon2 Params (Tag 0x04) - 12 Bytes
     out << (quint8)0x04 << (quint16)12;
-    out << metaData.iterations;     // Iterationen
-    out << metaData.memoryCost;     // 2GB RAM in KiB
-    out << metaData.parallelism;    // Parallelism
+    out << (quint32)metaData.iterations;     // Iterationen
+    out << (quint32)metaData.memoryCost;     // 2GB RAM in KiB
+    out << (quint32)metaData.parallelism;    // Parallelism
 
     // 5. ChaCha20 Nonce (Tag 0x05)
     out << (quint8)0x05 << (quint16)metaData.nonce.size();
-    file.write(metaData.nonce);
+    out.writeRawData(metaData.nonce.constData(), metaData.nonce.size());
 
     // 6. Auth-Tag (Tag 0x06)
     out << (quint8)0x06 << (quint16)metaData.authTag.size();
-    file.write(metaData.authTag);
+    out.writeRawData(metaData.authTag.constData(), metaData.authTag.size());
 
-    // 7. Die verschlüsselten SQLite Daten (Payload)
-    file.write(encryptedSQLite);
+    // 7. encrypt SQLite Data
+    out << (quint8)0x07 << (quint32)runTime.encryptedSQL.size();
+    out.writeRawData(runTime.encryptedSQL.constData(), runTime.encryptedSQL.size());
 
     file.close();
 }

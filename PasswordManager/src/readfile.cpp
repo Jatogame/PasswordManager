@@ -1,39 +1,81 @@
-/*
 #include <QSqlDatabase>
 #include <QFile>
-#include <sqlite3.h>
 #include <QtSql/QSqlDriver>
 #include "dbHeader.h"
 
-bool loadEncryptedDb(const QString &path, const QByteArray &key) {
-    QFile file(path);
+bool loadDatabase() {
+    QFile file(runTime.filePath);
     if (!file.open(QIODevice::ReadOnly)) return false;
 
-    // 1. skip header (z.B. 64 Bytes)
-    file.seek(64);
-    QByteArray encryptedData = file.readAll();
+    QDataStream in(&file);
+    in.setByteOrder(QDataStream::BigEndian);
 
-    // 2. decrypt (Pseudo-Code)
-    QByteArray decryptedData = MyCrypto::decrypt(encryptedData, key);
+    // We loop until we've read the entire file
+    while (!in.atEnd()) {
+        quint8 tag;
+        in >> tag; // Read the Tag (1 byte)
 
-    // 3. Qt SQLite connection
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(":memory:");
-    if (!db.open()) return false;
+        // Read the Length
+        // Tag 0x07 (Data) uses quint32, all others use quint16
+        quint32 length;
+        if (tag == 0x07) {
+            in >> length;
+        } else {
+            quint16 tempLen;
+            in >> tempLen;
+            length = tempLen;
+        }
 
-    // 4. get SQLite-Handle, to load into RAM
-    QVariant v = db.driver()->handle();
-    if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*") == 0) {
-        sqlite3 *handle = *static_cast<sqlite3**>(v.data());
+        // Standard safety check: don't try to read more than exists
+        if (in.status() != QDataStream::Ok) break;
 
-        // Deserialisieren: Schiebt die Bytes direkt in die Memory-DB
-        // SQLITE_DESERIALIZE_FREEONCLOSE sorgt dafür, dass SQLite das Array löscht
-        unsigned char* sqliteBuffer = static_cast<unsigned char*>(sqlite3_malloc(decryptedData.size()));
-        memcpy(sqliteBuffer, decryptedData.data(), decryptedData.size());
+        switch (tag) {
+        case 0x01: { // Magic ID
+            QByteArray magic(length, 0);
+            in.readRawData(magic.data(), length);
+            if (magic != "JAPASSDB") {
+                file.close();
+                return false; // Wrong file type!
+            }
+            break;
+        }
+        case 0x02: // Version
+            in >> metaData.version;
+            break;
 
-        sqlite3_deserialize(handle, "main", sqliteBuffer, decryptedData.size(),
-                            decryptedData.size(), SQLITE_DESERIALIZE_FREEONCLOSE);
+        case 0x03: // Salt
+            metaData.salt.resize(length);
+            in.readRawData(metaData.salt.data(), length);
+            break;
+
+        case 0x04: // Argon2 Params (Iterations, Memory, Parallelism)
+            in >> metaData.iterations;
+            in >> metaData.memoryCost;
+            in >> metaData.parallelism;
+            break;
+
+        case 0x05: // Nonce
+            metaData.nonce.resize(length);
+            in.readRawData(metaData.nonce.data(), length);
+            break;
+
+        case 0x06: // Auth-Tag
+            metaData.authTag.resize(length);
+            in.readRawData(metaData.authTag.data(), length);
+            break;
+
+        case 0x07: // Encrypted SQL Data
+            runTime.encryptedSQL.resize(length);
+            in.readRawData(runTime.encryptedSQL.data(), length);
+            break;
+
+        default:
+            // Skip unknown tags (Forward Compatibility)
+            in.skipRawData(length);
+            break;
+        }
     }
-    return true;
+
+    file.close();
+    return (in.status() == QDataStream::Ok);
 }
-*/
