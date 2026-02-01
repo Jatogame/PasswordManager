@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QSqlDatabase>
+#include <QProgressDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -147,13 +148,22 @@ void MainWindow::on_createdb_create_clicked()
         ui->createdb_error->setText("Passwords don't match");
         return;
     }
+
     //turn datatype to QByteArray (needed to handle it in function)
     QByteArray masterPassword = masterPasswordStr.toUtf8();
+
+    //set meta data for DB creation
+    metaData.version = createMetaData.version;
+    metaData.iterations = createMetaData.iterations;
+    metaData.memoryCost = createMetaData.memoryCost;
+    metaData.parallelism = createMetaData.parallelism;
+
     //key derivation
     if (createDerPassword(masterPassword) != true){
         ui->createdb_error->setText("Error: Key Derivation");
         return;
     }
+
     //save the filePath to use it in function
     masterPassword = "";
     runTime.filePath = filePath;
