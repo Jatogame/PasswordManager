@@ -10,72 +10,58 @@ bool loadDatabase() {
     QDataStream in(&file);
     in.setByteOrder(QDataStream::BigEndian);
 
-    // We loop until we've read the entire file
     while (!in.atEnd()) {
         quint8 tag;
-        in >> tag; // Read the Tag (1 byte)
+        in >> tag; // Read 1-byte Tag
 
-        // Read the Length
-        // Tag 0x07 (Data) uses quint32, all others use quint16
-        quint32 length;
-        if (tag == 0x07) {
-            in >> length;
-        } else {
-            quint16 tempLen;
-            in >> tempLen;
-            length = tempLen;
-        }
-
-        // Standard safety check: don't try to read more than exists
         if (in.status() != QDataStream::Ok) break;
 
         switch (tag) {
         case 0x01: { // Magic ID
-            QByteArray magic(length, 0);
-            in.readRawData(magic.data(), length);
-            if (magic != "JAPASSDB") {
-                file.close();
-                return false; // Wrong file type!
-            }
+            quint16 len; in >> len;
+            QByteArray magic(len, 0);
+            in.readRawData(magic.data(), len);
+            if (magic != "JAPASSDB") return false;
             break;
         }
-        case 0x02: // Version
+        case 0x02: { // Version
+            quint16 len; in >> len;
             in >> metaData.version;
             break;
-
-        case 0x03: // Salt
-            metaData.salt.resize(length);
-            in.readRawData(metaData.salt.data(), length);
+        }
+        case 0x03: { // Salt
+            quint16 len; in >> len;
+            metaData.salt.resize(len);
+            in.readRawData(metaData.salt.data(), len);
             break;
-
-        case 0x04: // Argon2 Params (Iterations, Memory, Parallelism)
-            in >> metaData.iterations;
-            in >> metaData.memoryCost;
-            in >> metaData.parallelism;
+        }
+        case 0x04: { // Argon2 Params
+            quint16 len; in >> len;
+            in >> metaData.iterations >> metaData.memoryCost >> metaData.parallelism;
             break;
-
-        case 0x05: // Nonce
-            metaData.nonce.resize(length);
-            in.readRawData(metaData.nonce.data(), length);
+        }
+        case 0x05: { // Nonce
+            quint16 len; in >> len;
+            metaData.nonce.resize(len);
+            in.readRawData(metaData.nonce.data(), len);
             break;
-
-        case 0x06: // Auth-Tag
-            metaData.authTag.resize(length);
-            in.readRawData(metaData.authTag.data(), length);
+        }
+        case 0x06: { // Encrypted Data
+            quint32 len; in >> len; // Note: quint32 for the large data
+            runTime.encryptedSQL.resize(len);
+            in.readRawData(runTime.encryptedSQL.data(), len);
             break;
-
-        case 0x07: // Encrypted SQL Data
-            runTime.encryptedSQL.resize(length);
-            in.readRawData(runTime.encryptedSQL.data(), length);
+        }
+        default: {
+            // Unknown tag? Read the next 2 bytes as length and skip it.
+            // This makes your file format "Forward Compatible"
+            quint16 unknownLen; in >> unknownLen;
+            in.skipRawData(unknownLen);
             break;
-
-        default:
-            // Skip unknown tags (Forward Compatibility)
-            in.skipRawData(length);
-            break;
+        }
         }
     }
 
     file.close();
-    return (in.status() == QDataStream::Ok);
+    return true;
 }
