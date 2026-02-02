@@ -29,6 +29,9 @@ qt_add_executable(PasswordManager
     src/encryptfile.cpp
     src/derivePassword.cpp
     src/datasets.cpp
+    src/serializeDB.cpp
+    src/closeLock.cpp
+    src/decryptfile.cpp
 
 
 
@@ -38,6 +41,7 @@ qt_add_executable(PasswordManager
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${SODIUM_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SODIUM_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE sqlite3)
 
 target_link_libraries(PasswordManager
     PRIVATE

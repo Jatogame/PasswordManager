@@ -179,11 +179,29 @@ void MainWindow::on_createdb_create_clicked()
         } else{
         ui->createdb_error->setText("Failed to create Database");
     }
+
     //delete saved inputs
-    masterPassword = "";
-    masterPasswordStr = "";
-    confirmPasswordStr = "";
-    runTime.derPass = "";
+    // 1. Wipe the derived encryption key (The most sensitive part)
+    if (!runTime.derPass.isEmpty()) {
+        sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
+        runTime.derPass.clear();
+    }
+
+    // 2. Wipe the decrypted SQL data
+    if (!runTime.decryptedSQL.isEmpty()) {
+        sodium_memzero(runTime.decryptedSQL.data(), runTime.decryptedSQL.size());
+        runTime.decryptedSQL.clear();
+    }
+
+    // 3. Wipe the passwords
+    masterPasswordStr.fill('\0');
+    masterPasswordStr.clear();
+
+    confirmPasswordStr.fill('\0');
+    confirmPasswordStr.clear();
+
+    // 4. Encrypted data and paths are less sensitive, but clearing is good practice
+    runTime.encryptedSQL.clear();
     runTime.filePath = "";
 }
 
@@ -201,5 +219,21 @@ void MainWindow::on_lock_selectdb_clicked()
         return;
 
     ui->lock_displaypath->setText(pathSelect);
+}
+
+
+
+
+void MainWindow::on_entermasterpassword_clicked()
+{
+    //read inputs
+    QString filePath = ui->lock_displaypath->toPlainText();
+    QString masterPasswordStr = ui->lock_mp->text();
+
+    //check, that file path isn't empty
+    if (filePath.isEmpty()) {
+        ui->createdb_error->setText("Path is empty");
+        return;
+    }
 }
 

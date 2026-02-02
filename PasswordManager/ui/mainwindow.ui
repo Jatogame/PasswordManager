@@ -372,7 +372,7 @@ border: white;
          <string notr="true">border-radius: 5px;</string>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="lockscreen">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -405,7 +405,7 @@ border: white;
                  </spacer>
                 </item>
                 <item row="5" column="1">
-                 <widget class="QLineEdit" name="linemasterpassword">
+                 <widget class="QLineEdit" name="lock_mp">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -472,6 +472,9 @@ border: white;
                     <height>30</height>
                    </size>
                   </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(82, 77, 77);</string>
                   </property>
@@ -521,6 +524,9 @@ border: white;
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(82, 77, 77);</string>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
                   </property>
                   <property name="placeholderText">
                    <string>Selected Path</string>
@@ -615,19 +621,15 @@ border: white;
             <property name="styleSheet">
              <string notr="true">background-color: rgb(50, 50, 50);</string>
             </property>
-            <widget class="QLabel" name="label_3">
-             <property name="geometry">
-              <rect>
-               <x>410</x>
-               <y>190</y>
-               <width>81</width>
-               <height>31</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>passwords</string>
-             </property>
-            </widget>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>passwords</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -651,19 +653,15 @@ border: white;
             <property name="styleSheet">
              <string notr="true">background-color: rgb(50, 50, 50);</string>
             </property>
-            <widget class="QLabel" name="label">
-             <property name="geometry">
-              <rect>
-               <x>360</x>
-               <y>130</y>
-               <width>91</width>
-               <height>41</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>healthcheck</string>
-             </property>
-            </widget>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>healthcheck</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -687,19 +685,15 @@ border: white;
             <property name="styleSheet">
              <string notr="true">background-color: rgb(50, 50, 50);</string>
             </property>
-            <widget class="QLabel" name="label_2">
-             <property name="geometry">
-              <rect>
-               <x>360</x>
-               <y>130</y>
-               <width>131</width>
-               <height>71</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>passwordgen</string>
-             </property>
-            </widget>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>passwordgen</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -723,19 +717,15 @@ border: white;
             <property name="styleSheet">
              <string notr="true">background-color: rgb(50, 50, 50);</string>
             </property>
-            <widget class="QLabel" name="label_4">
-             <property name="geometry">
-              <rect>
-               <x>390</x>
-               <y>190</y>
-               <width>58</width>
-               <height>18</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>settigns</string>
-             </property>
-            </widget>
+            <layout class="QGridLayout" name="gridLayout_7">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>settigns</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>

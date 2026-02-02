@@ -1,8 +1,4 @@
-#include <QString>
-#include <QFileDialog>
-#include <QSqlDatabase>
 #include "dbHeader.h"
-#include <sodium.h>
 
 bool createDerPassword(QByteArray masterPassword){
 

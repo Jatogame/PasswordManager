@@ -4,6 +4,10 @@
 #include <QString>
 #include <QFileDialog>
 #include <QSqlDatabase>
+#include <sodium.h>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QTemporaryFile>
 
 struct DbHeader {
     uint32_t version = 1;
@@ -41,5 +45,9 @@ void saveDatabase();
 void encryptDB();
 bool createDerPassword(QByteArray masterPassword);
 bool derivePassword(QByteArray masterPassword);
+QByteArray serializeDatabase();
+bool createDatabaseStructure();
+bool initializeMetaData();
+void closeAndLock();
 
 #endif // DBHEADER_H
