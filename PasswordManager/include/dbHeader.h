@@ -49,5 +49,9 @@ QByteArray serializeDatabase();
 bool createDatabaseStructure();
 bool initializeMetaData();
 void closeAndLock();
+bool loadDatabase();
+bool decryptDB();
+bool loadDecryptedData(const QByteArray &decryptedData);
+bool isDatabaseAuthentic();
 
 #endif // DBHEADER_H

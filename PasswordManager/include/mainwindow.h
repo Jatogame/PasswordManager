@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "dbmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,6 +18,10 @@ public:
     ~MainWindow();
     //When opening the Application, open it in lock screen
     void open_locked();
+    //delete DB connection
+    void cleanupDatabase();
+    //clean runTime struct
+    void wipeRuntimeStruct();
 
 private slots:
     //slots for buttons
@@ -46,6 +49,5 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    DatabaseManager *m_dbManager;
 };
 #endif // MAINWINDOW_H

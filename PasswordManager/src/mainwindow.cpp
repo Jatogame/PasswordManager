@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dbmanager.h"
 #include "dbHeader.h"
 #include <QDir>
 #include <QFileDialog>
@@ -12,12 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //create instance for the database manager
-    m_dbManager = new DatabaseManager(this);
 }
 
 MainWindow::~MainWindow()
 {
+    cleanupDatabase();
+    wipeRuntimeStruct();
     delete ui;
 }
 
@@ -27,9 +26,49 @@ void MainWindow::open_locked()
     ui->sidebar_lock->click();
 }
 
+//delete data in struct when closing Application
+void wipeRuntimeStruct() {
+    // 1. SENSITIVE: Wipe binary keys/data with Libsodium
+    // These are the most dangerous to leave in RAM
+    if (!runTime.derPass.isEmpty()) {
+        sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
+        runTime.derPass.clear();
+    }
+
+    if (!runTime.decryptedSQL.isEmpty()) {
+        sodium_memzero(runTime.decryptedSQL.data(), runTime.decryptedSQL.size());
+        runTime.decryptedSQL.clear();
+    }
+
+    // 2. NON-SENSITIVE
+    runTime.filePath.clear();
+    runTime.encryptedSQL.clear(); // Already encrypted, but good to clear
+}
+
+//delete DB connection before exiting Application
+void cleanupDatabase() {
+    // 1. Get the connection name
+    QString connectionName = "internal_db";
+
+    {
+        // 2. Scope the database object
+        // We put this in brackets so the 'db' object is destroyed
+        // before we call removeDatabase.
+        QSqlDatabase db = QSqlDatabase::database(connectionName);
+        if (db.isOpen()) {
+            db.close();
+        }
+    }
+
+    // 3. Remove the connection from Qt's global list
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
 //Page navigation (stacked Widget)
 void MainWindow::on_sidebar_lock_clicked()
 {
+    //close DB connection
+    void closeAndLock();
     ui->sidebar_lock->setChecked(true);
 
     ui->stackedWidget->setCurrentIndex(0);
@@ -130,6 +169,11 @@ void MainWindow::on_createdb_cancel_clicked()
 //validate the input and create a new database
 void MainWindow::on_createdb_create_clicked()
 {
+    //clear inputs of lock screen
+    ui->lock_error->clear();
+    ui->lock_displaypath->clear();
+    ui->lock_masterp->clear();
+
     //clear the error text
     ui->createdb_error->clear();
 
@@ -221,19 +265,68 @@ void MainWindow::on_lock_selectdb_clicked()
     ui->lock_displaypath->setText(pathSelect);
 }
 
-
-
-
+//open decrypted file
 void MainWindow::on_entermasterpassword_clicked()
 {
+    //make sure existing DB is closed
+    void closeAndLock();
+
+    ui->lock_error->clear(); //clear error message
+
     //read inputs
     QString filePath = ui->lock_displaypath->toPlainText();
-    QString masterPasswordStr = ui->lock_mp->text();
+    QString mpLoginStr = ui->lock_masterp->text();
+
+    runTime.filePath = filePath;
 
     //check, that file path isn't empty
     if (filePath.isEmpty()) {
-        ui->createdb_error->setText("Path is empty");
+        ui->lock_error->setText("File Path empty");
         return;
     }
+
+    //turn datatype to QByteArray (needed to handle it in function)
+    QByteArray mpLogin = mpLoginStr.toUtf8();
+
+    //read the file and extract the header info
+    if (loadDatabase() != true){
+        ui->lock_error->setText("Failed load Database");
+        return;
+    }
+
+    //key derivation
+    if (derivePassword(mpLogin) != true){
+        ui->lock_error->setText("Failed to derive Password");
+        return;
+    }
+
+    //decrypt Database
+    if (decryptDB() != true){
+        ui->lock_error->setText("Failed to decrypt Database");
+        return;
+    }
+
+    //open passwords-page
+    ui->sidebar_passwords->setChecked(true);
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->sidebar_lock->setChecked(false);
+    ui->sidebar_healthcheck->setChecked(false);
+    ui->sidebar_passwordgenerator->setChecked(false);
+    ui->sidebar_settings->setChecked(false);
+
+    //delete inputs
+    ui->lock_error->clear();
+    ui->lock_displaypath->clear();
+    ui->lock_masterp->clear();
+
+    //securely empty
+    mpLoginStr.fill('\0');
+    mpLoginStr.clear();
+
+    mpLogin.fill('\0');
+    mpLogin.clear();
+
+    sodium_memzero(runTime.decryptedSQL.data(), runTime.decryptedSQL.size());
+    runTime.decryptedSQL.clear();
 }
 

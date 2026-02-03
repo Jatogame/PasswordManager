@@ -1,4 +1,7 @@
 #include "dbHeader.h"
+#include <QtSql/QSqlDriver>
+#include <qsqldatabase.h>
+#include <sqlite3.h>
 
 bool decryptDB(){
     // 1. Safety Check
@@ -30,7 +33,12 @@ bool decryptDB(){
 
     // 4. Load the raw bytes into your in-memory SQLite
     // Using QTemporaryFile
-    return restoreFromBytes(decryptedData);
+    if (loadDecryptedData(decryptedData) != true){
+        return false;
+    }
+    sodium_memzero(decryptedData.data(), decryptedData.size());
+
+    return true;
 }
 
 bool isDatabaseAuthentic() {
@@ -47,4 +55,64 @@ bool isDatabaseAuthentic() {
 
     qDebug() << "Database structure is okay, but the 'check' record is missing or wrong.";
     return false;
+}
+
+bool loadDecryptedData(const QByteArray &decryptedData){
+    // 1. Re-initialize the Qt SQL connection
+    // This creates a brand new, empty database in RAM
+    if (QSqlDatabase::contains("internal_db")) {
+        QSqlDatabase::removeDatabase("internal_db");
+    }
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "internal_db");
+    db.setDatabaseName(":memory:");
+
+    if (!db.open()) {
+        qDebug() << "Could not open memory database!";
+        return false;
+    }
+
+    // 2. Create the temporary file to bridge the data
+    QTemporaryFile tempFile;
+    if (!tempFile.open()) return false;
+    tempFile.write(decryptedData);
+    tempFile.close();
+
+    // 3. Prepare the RAM database with the correct rules (Schema)
+    QSqlQuery query(db);
+
+    // Create the tables exactly as you defined them
+    query.exec(
+        "CREATE TABLE passwords ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "name TEXT, "
+        "tag TEXT, "
+        "url TEXT, "
+        "username TEXT, "
+        "password TEXT, "
+        "notes TEXT"
+        ")"
+        );
+
+    query.exec(
+        "CREATE TABLE meta ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "name TEXT, "
+        "data TEXT"
+        ")"
+        );
+
+    // Now attach the decrypted file
+    if (!query.exec(QString("ATTACH DATABASE '%1' AS temp_disk").arg(tempFile.fileName()))) {
+        return false;
+    }
+
+    // 4. Import the data into the already-created tables
+    // We specify the target columns to be safe
+    query.exec("INSERT INTO main.passwords SELECT * FROM temp_disk.passwords");
+    query.exec("INSERT INTO main.meta SELECT * FROM temp_disk.meta");
+
+    // 5. Clean up
+    query.exec("DETACH DATABASE temp_disk");
+
+    return true;
 }
