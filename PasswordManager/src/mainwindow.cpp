@@ -27,7 +27,7 @@ void MainWindow::open_locked()
 }
 
 //delete data in struct when closing Application
-void wipeRuntimeStruct() {
+void MainWindow::wipeRuntimeStruct() {
     // 1. SENSITIVE: Wipe binary keys/data with Libsodium
     // These are the most dangerous to leave in RAM
     if (!runTime.derPass.isEmpty()) {
@@ -46,7 +46,7 @@ void wipeRuntimeStruct() {
 }
 
 //delete DB connection before exiting Application
-void cleanupDatabase() {
+void MainWindow::cleanupDatabase() {
     // 1. Get the connection name
     QString connectionName = "internal_db";
 
