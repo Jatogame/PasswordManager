@@ -16,8 +16,8 @@ qt_add_executable(PasswordManager
     src/mainwindow.cpp
     include/mainwindow.h
     ui/mainwindow.ui
-    src/dbmanager.cpp
-    include/dbmanager.h
+
+
 
 
 
@@ -32,6 +32,9 @@ qt_add_executable(PasswordManager
     src/serializeDB.cpp
     src/closeLock.cpp
     src/decryptfile.cpp
+
+
+
 
 
 
