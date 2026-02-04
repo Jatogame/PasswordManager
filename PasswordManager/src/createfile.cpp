@@ -15,7 +15,7 @@ bool createDatabaseStructure() {
     db.setDatabaseName(":memory:");
 
     if (!db.open()) {
-        qDebug() << "Error opening memory database:" << db.lastError().text();
+        //qDebug() << "Error opening memory database:" << db.lastError().text();
         return false;
     }
 
