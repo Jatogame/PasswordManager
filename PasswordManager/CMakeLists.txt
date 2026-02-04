@@ -32,6 +32,7 @@ qt_add_executable(PasswordManager
     src/serializeDB.cpp
     src/closeLock.cpp
     src/decryptfile.cpp
+    src/passwordgenerator.cpp
 
 
 

@@ -27,7 +27,7 @@ bool decryptDB(){
         );
 
     if (result != 0) {
-        qDebug() << "Decryption failed! The file was tampered with or the password is wrong.";
+        //qDebug() << "Decryption failed! The file was tampered with or the password is wrong.";
         return false;
     }
 
@@ -48,12 +48,12 @@ bool isDatabaseAuthentic() {
     if (query.next()) {
         QString checkValue = query.value(0).toString();
         if (checkValue == "JAPASS1") {
-            qDebug() << "Database verified! Welcome back.";
+            //qDebug() << "Database verified! Welcome back.";
             return true;
         }
     }
 
-    qDebug() << "Database structure is okay, but the 'check' record is missing or wrong.";
+    //qDebug() << "Database structure is okay, but the 'check' record is missing or wrong.";
     return false;
 }
 
@@ -67,7 +67,7 @@ bool loadDecryptedData(const QByteArray &decryptedData){
     db.setDatabaseName(":memory:");
 
     if (!db.open()) {
-        qDebug() << "Could not open memory database!";
+        //qDebug() << "Could not open memory database!";
         return false;
     }
 
@@ -113,6 +113,7 @@ bool loadDecryptedData(const QByteArray &decryptedData){
 
     // 5. Clean up
     query.exec("DETACH DATABASE temp_disk");
+    tempFile.remove();
 
     return true;
 }

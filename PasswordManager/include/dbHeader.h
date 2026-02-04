@@ -53,5 +53,6 @@ bool loadDatabase();
 bool decryptDB();
 bool loadDecryptedData(const QByteArray &decryptedData);
 bool isDatabaseAuthentic();
+QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbers, bool useSpecial);
 
 #endif // DBHEADER_H

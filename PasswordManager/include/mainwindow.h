@@ -48,6 +48,8 @@ private slots:
 
     void on_entermasterpassword_clicked();
 
+    void on_genpass_gen_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

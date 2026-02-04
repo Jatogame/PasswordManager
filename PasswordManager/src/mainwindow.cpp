@@ -11,6 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //update the value for the slider-value on the password generator page
+    connect(ui->genpass_slider, &QSlider::valueChanged, this, [=](int value) {
+        ui->genpass_slidervalue->setText(QString::number(value));
+    });
 }
 
 MainWindow::~MainWindow()
@@ -330,3 +335,20 @@ void MainWindow::on_entermasterpassword_clicked()
     runTime.decryptedSQL.clear();
 }
 
+
+void MainWindow::on_genpass_gen_clicked()
+{
+    QString genPassword = "";
+
+    //get inputs
+    int length = ui->genpass_slider->value();
+    bool lower = ui->genpass_lower->isChecked();
+    bool upper = ui->genpass_upper->isChecked();
+    bool numbers = ui->genpass_numbers->isChecked();
+    bool special = ui->genpass_special->isChecked();
+
+    //generate password
+    genPassword = generatePassword(length, lower, upper, numbers, special);
+
+    ui->genpass_password->setText(genPassword); //show password
+}
