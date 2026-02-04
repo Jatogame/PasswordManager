@@ -36,7 +36,7 @@
     </sizepolicy>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(82, 77, 77);</string>
+    <string notr="true">background-color: rgb(60, 60, 60);</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <property name="leftMargin">
@@ -83,7 +83,7 @@
          <enum>Qt::LayoutDirection::LeftToRight</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);</string>
+         <string notr="true">background-color: rgb(30, 30, 30);</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <property name="spacing">
@@ -157,11 +157,11 @@
              </property>
              <property name="styleSheet">
               <string notr="true">:!unchecked{
-background-color: rgb(50, 50, 50);
+background-color: rgb(30, 30, 30);
 border: white;
 }
 :checked{
-background-color: rgb(35, 35, 35);
+background-color: rgb(60, 60, 60);
 border: white;
 }</string>
              </property>
@@ -196,11 +196,11 @@ border: white;
              </property>
              <property name="styleSheet">
               <string notr="true">:!unchecked{
-background-color: rgb(50, 50, 50);
+background-color: rgb(30, 30, 30);
 border: white;
 }
 :checked{
-background-color: rgb(35, 35, 35);
+background-color: rgb(60, 60, 60);
 border: white;
 }</string>
              </property>
@@ -235,11 +235,11 @@ border: white;
              </property>
              <property name="styleSheet">
               <string notr="true">:!unchecked{
-background-color: rgb(50, 50, 50);
+background-color: rgb(30, 30, 30);
 border: white;
 }
 :checked{
-background-color: rgb(35, 35, 35);
+background-color: rgb(60, 60, 60);
 border: white;
 }</string>
              </property>
@@ -274,11 +274,11 @@ border: white;
              </property>
              <property name="styleSheet">
               <string notr="true">:!unchecked{
-background-color: rgb(50, 50, 50);
+background-color: rgb(30, 30, 30);
 border: white;
 }
 :checked{
-background-color: rgb(35, 35, 35);
+background-color: rgb(60, 60, 60);
 border: white;
 }</string>
              </property>
@@ -339,11 +339,11 @@ border: white;
              </property>
              <property name="styleSheet">
               <string notr="true">:!unchecked{
-background-color: rgb(50, 50, 50);
+background-color: rgb(30, 30, 30);
 border: white;
 }
 :checked{
-background-color: rgb(35, 35, 35);
+background-color: rgb(60, 60, 60);
 border: white;
 }</string>
              </property>
@@ -385,7 +385,7 @@ border: white;
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(50, 50, 50);</string>
+             <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
              <item row="0" column="0">
@@ -629,7 +629,7 @@ border: white;
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(50, 50, 50);</string>
+             <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
              <item row="0" column="0">
@@ -661,7 +661,7 @@ border: white;
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(50, 50, 50);</string>
+             <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_8">
              <item row="0" column="0">
@@ -699,7 +699,7 @@ border: white;
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(50, 50, 50);</string>
+             <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
              <item row="7" column="0">
@@ -852,6 +852,9 @@ border: white;
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(82, 77, 77);</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
+                  </property>
                   <property name="readOnly">
                    <bool>true</bool>
                   </property>
@@ -991,7 +994,7 @@ border: white;
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(50, 50, 50);</string>
+             <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
              <item row="0" column="0">
@@ -1023,7 +1026,7 @@ border: white;
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(50, 50, 50);</string>
+             <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="6" column="1">
@@ -1211,7 +1214,20 @@ border: white;
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+        border-radius: 6px;
+        padding: 8px 14px;
+    }
+
+QPushButton:hover {
+        background-color: rgb(102, 97, 97);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(122, 117, 117);
+    }</string>
                   </property>
                   <property name="text">
                    <string>Cancel</string>
