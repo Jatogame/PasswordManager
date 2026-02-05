@@ -141,6 +141,9 @@ void MainWindow::on_newdb_clicked()
 //display the selected path for the new database
 void MainWindow::on_createdb_selectpath_clicked()
 {
+    ui->createdb_error->clear(); //clear error text
+
+    //File Dialog to select a filename and location
     QString pathCreate = QFileDialog::getSaveFileName(
         this,
         "Create New Database",
@@ -151,12 +154,20 @@ void MainWindow::on_createdb_selectpath_clicked()
     if (pathCreate.isEmpty())
         return;
 
+    //add the file extension
     QFileInfo info(pathCreate);
     if (info.suffix().toLower() != "japass1") {
         pathCreate += ".japass1";
+        info.setFile(pathCreate);
     }
 
-    ui->createdb_displaypath->setText(pathCreate);
+    //checks if file with same name already exists and writes an error, if so
+    if (info.exists()) {
+        ui->createdb_error->setText("File with the same name already exists");
+    } else{
+        ui->createdb_displaypath->setText(pathCreate);
+    }
+
 }
 
 //Cancel the creation of a new database
@@ -213,9 +224,7 @@ void MainWindow::on_createdb_create_clicked()
         return;
     }
 
-    //save the filePath to use it in function
-    masterPassword = "";
-    runTime.filePath = filePath;
+    runTime.filePath = filePath; //save the filePath to use it in function
 
     if (createFile()==true){
         //go to Lock page
@@ -243,6 +252,10 @@ void MainWindow::on_createdb_create_clicked()
     }
 
     // 3. Wipe the passwords
+    if (!masterPassword.isEmpty()) {
+        sodium_memzero(masterPassword.data(), masterPassword.size());
+        masterPassword.clear();
+    }
     masterPasswordStr.fill('\0');
     masterPasswordStr.clear();
 

@@ -372,7 +372,7 @@ border: white;
          <string notr="true">border-radius: 5px;</string>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="lockscreen">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -524,7 +524,18 @@ border: white;
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
                   </property>
                   <property name="text">
                    <string>Select Database</string>
@@ -543,7 +554,18 @@ border: white;
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
                   </property>
                   <property name="text">
                    <string>Enter</string>
@@ -584,7 +606,18 @@ border: white;
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
                   </property>
                   <property name="text">
                    <string>Create New</string>
@@ -759,7 +792,18 @@ border: white;
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(82, 77, 77);</string>
+                <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
                </property>
                <property name="text">
                 <string>Generate</string>
@@ -1061,7 +1105,7 @@ border: white;
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>100</width>
+                 <width>300</width>
                  <height>30</height>
                 </size>
                </property>
@@ -1069,7 +1113,18 @@ border: white;
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(82, 77, 77);</string>
+                <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
                </property>
                <property name="text">
                 <string>Select path</string>
@@ -1189,7 +1244,18 @@ border: white;
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
                   </property>
                   <property name="text">
                    <string>Create</string>
@@ -1217,16 +1283,14 @@ border: white;
                    <string notr="true">QPushButton {
         background-color: rgb(82, 77, 77);
         color: white;
-        border-radius: 6px;
-        padding: 8px 14px;
     }
 
 QPushButton:hover {
-        background-color: rgb(102, 97, 97);
+        background-color: rgb(72, 67, 67);
 }
 
     QPushButton:pressed {
-        background-color: rgb(122, 117, 117);
+        background-color: rgb(62, 57, 57);
     }</string>
                   </property>
                   <property name="text">
