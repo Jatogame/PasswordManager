@@ -16,10 +16,11 @@ QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbe
 
     QString password;
     password.reserve(length);
+    int index;
 
     for (int i = 0; i < length; ++i) {
         // Securely pick a random index from the pool
-        quint32 index = QRandomGenerator::global()->bounded(static_cast<quint32>(charPool.length()));
+        index = QRandomGenerator::global()->bounded(static_cast<quint32>(charPool.length()));
         password.append(charPool.at(index));
     }
 
