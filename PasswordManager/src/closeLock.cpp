@@ -11,6 +11,7 @@ void closeAndLock() {
 
     // 3. Wipe the derived key and decrypted data
     sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
+    sodium_memzero(runTime.decryptedSQL.data(), runTime.decryptedSQL.size());
     runTime.derPass.clear();
     runTime.decryptedSQL.clear();
 }

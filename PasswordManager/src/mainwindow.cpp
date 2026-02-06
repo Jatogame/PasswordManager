@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dbHeader.h"
+#include "passwordrow.h"
 #include <QDir>
 #include <QFileDialog>
 #include <QSqlDatabase>
@@ -34,7 +35,6 @@ void MainWindow::open_locked()
 //delete data in struct when closing Application
 void MainWindow::wipeRuntimeStruct() {
     // 1. SENSITIVE: Wipe binary keys/data with Libsodium
-    // These are the most dangerous to leave in RAM
     if (!runTime.derPass.isEmpty()) {
         sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
         runTime.derPass.clear();
@@ -47,7 +47,7 @@ void MainWindow::wipeRuntimeStruct() {
 
     // 2. NON-SENSITIVE
     runTime.filePath.clear();
-    runTime.encryptedSQL.clear(); // Already encrypted, but good to clear
+    runTime.encryptedSQL.clear();
 }
 
 //delete DB connection before exiting Application
@@ -57,8 +57,6 @@ void MainWindow::cleanupDatabase() {
 
     {
         // 2. Scope the database object
-        // We put this in brackets so the 'db' object is destroyed
-        // before we call removeDatabase.
         QSqlDatabase db = QSqlDatabase::database(connectionName);
         if (db.isOpen()) {
             db.close();
@@ -67,6 +65,38 @@ void MainWindow::cleanupDatabase() {
 
     // 3. Remove the connection from Qt's global list
     QSqlDatabase::removeDatabase(connectionName);
+}
+
+void MainWindow::refreshPasswords(){
+    // 1. Clear existing items in the layout (optional, but good for refreshing)
+    QLayoutItem *child;
+    while ((child = ui->verticalLayout->takeAt(0)) != nullptr) {
+        if (child->widget()) {
+            child->widget()->deleteLater();
+        }
+        delete child;
+    }
+
+    // 2. Query the database
+    QSqlQuery query("SELECT id, name, url, username, notes FROM passwords");
+
+    while (query.next()) {
+        int id = query.value(0).toInt();
+        QString name = query.value(1).toString();
+        QString url = query.value(2).toString();
+        QString username = query.value(3).toString();
+        QString notes = query.value(4).toString();
+
+        // 3. Create your custom UI element
+        PasswordRow *row = new PasswordRow(id, name, url, username, notes, this);
+
+        // 4. Add it to the layout inside the scroll area
+        ui->verticalLayout->addWidget(row);
+    }
+
+    // 5. Add a "Spacer" at the bottom
+    // This pushes all items to the top so they don't stretch vertically
+    ui->verticalLayout->addStretch();
 }
 
 //Page navigation (stacked Widget)
@@ -239,7 +269,7 @@ void MainWindow::on_createdb_create_clicked()
     }
 
     //delete saved inputs
-    // 1. Wipe the derived encryption key (The most sensitive part)
+    // 1. Wipe the derived encryption key
     if (!runTime.derPass.isEmpty()) {
         sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
         runTime.derPass.clear();

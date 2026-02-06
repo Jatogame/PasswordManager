@@ -4,7 +4,7 @@
 #include "dbHeader.h"
 
 void saveDatabase() {
-    encryptDB(); // This now produces one QByteArray containing [Ciphertext + Tag]
+    encryptDB(); //this produces one QByteArray containing [Ciphertext + Tag]
 
     QFile file(runTime.filePath);
     if (!file.open(QIODevice::WriteOnly)) return;
@@ -32,7 +32,6 @@ void saveDatabase() {
     out.writeRawData(metaData.nonce.constData(), metaData.nonce.size());
 
     // 6. Encrypted SQL Data (Tag 0x06)
-    // Note: runTime.encryptedSQL already contains the 16-byte Auth-Tag at the end
     out << (quint8)0x06 << (quint32)runTime.encryptedSQL.size();
     out.writeRawData(runTime.encryptedSQL.constData(), runTime.encryptedSQL.size());
 
