@@ -38,7 +38,7 @@
    <property name="styleSheet">
     <string notr="true">background-color: rgb(60, 60, 60);</string>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_8">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -372,7 +372,7 @@ border: white;
          <string notr="true">border-radius: 5px;</string>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="lockscreen">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -661,14 +661,86 @@ QPushButton:hover {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="layoutDirection">
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
+             <item row="1" column="0">
+              <widget class="QScrollArea" name="scrollArea">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(60,60,60);</string>
+               </property>
+               <property name="widgetResizable">
+                <bool>true</bool>
+               </property>
+               <widget class="QWidget" name="scrollAreaWidgetContents">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>927</width>
+                  <height>633</height>
+                 </rect>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <widget class="QWidget" name="verticalLayoutWidget">
+                 <property name="geometry">
+                  <rect>
+                   <x>9</x>
+                   <y>9</y>
+                   <width>911</width>
+                   <height>621</height>
+                  </rect>
+                 </property>
+                 <layout class="QVBoxLayout" name="passwords_vertical"/>
+                </widget>
+               </widget>
+              </widget>
+             </item>
              <item row="0" column="0">
-              <widget class="QLabel" name="label_3">
+              <widget class="QPushButton" name="pushButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>120</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
+               </property>
                <property name="text">
-                <string>passwords</string>
+                <string>Create new Entry</string>
                </property>
               </widget>
              </item>

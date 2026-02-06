@@ -2,7 +2,7 @@
 #include <QRandomGenerator>
 
 QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbers, bool useSpecial){
-    // 1. Constrain length to your maximum
+    //length min 1, max 50
     length = std::clamp(length, 1, 50);
 
     QString charPool = "";
@@ -11,7 +11,7 @@ QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbe
     if (useNumbers) charPool += "0123456789";
     if (useSpecial) charPool += "~`!@#$%^&*()-_+={}[]|\\;:<>,./?";
 
-    // Fallback if no categories are selected
+    //fallback if no categories are selected
     if (charPool.isEmpty()) return QString();
 
     QString password;
@@ -19,7 +19,7 @@ QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbe
     int index;
 
     for (int i = 0; i < length; ++i) {
-        // Securely pick a random index from the pool
+        //securely pick a random index from the pool
         index = QRandomGenerator::global()->bounded(static_cast<quint32>(charPool.length()));
         password.append(charPool.at(index));
     }

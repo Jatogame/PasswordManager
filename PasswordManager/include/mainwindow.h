@@ -22,6 +22,8 @@ public:
     //clean runTime struct
     void wipeRuntimeStruct();
 
+    void refreshPasswords();
+
     ~MainWindow();
 
 private slots:

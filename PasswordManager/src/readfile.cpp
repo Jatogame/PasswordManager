@@ -54,7 +54,7 @@ bool loadDatabase() {
         }
         default: {
             // Unknown tag? Read the next 2 bytes as length and skip it.
-            // This makes your file format "Forward Compatible"
+            // makes the file format "Forward Compatible"
             quint16 unknownLen; in >> unknownLen;
             in.skipRawData(unknownLen);
             break;
