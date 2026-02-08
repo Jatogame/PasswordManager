@@ -26,7 +26,7 @@ bool createDatabaseStructure() {
     bool success = query.exec(
         "CREATE TABLE passwords ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "name TEXT, "
+        "name TEXT NOT NULL UNIQUE, "
         "tag TEXT, "
         "url TEXT, "
         "username TEXT, "
