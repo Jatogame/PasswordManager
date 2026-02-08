@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "dbHeader.h"
 #include "passwordrow.h"
+#include "dbManager.h"
 #include <QDir>
 #include <QFileDialog>
 #include <QSqlDatabase>
@@ -52,34 +53,45 @@ void MainWindow::wipeRuntimeStruct() {
 
 //delete DB connection before exiting Application
 void MainWindow::cleanupDatabase() {
-    // 1. Get the connection name
-    QString connectionName = "internal_db";
-
-    {
-        // 2. Scope the database object
-        QSqlDatabase db = QSqlDatabase::database(connectionName);
-        if (db.isOpen()) {
-            db.close();
+    DatabaseManager::instance().closeAndLock();
+    //delete entries in the passwords-page
+    while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
+        if (QWidget *w = child->widget()) {
+            w->deleteLater();
         }
+        delete child;
     }
-
-    // 3. Remove the connection from Qt's global list
-    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void MainWindow::refreshPasswords(){
-    //clear existing items in the layout
-    QLayoutItem *child;
-    while ((child = ui->passwords_vertical->takeAt(0)) != nullptr) {
-        if (child->widget()) {
-            child->widget()->deleteLater();
+    // 1) Clear existing items
+    while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
+        if (QWidget *w = child->widget()) {
+            w->deleteLater();
         }
         delete child;
     }
 
-    //Query the database
-    QSqlQuery query("SELECT id, name, url, username, notes FROM passwords");
+    // 2) Get the open DB connection from your manager
+    QSqlDatabase db = DatabaseManager::instance().db();
+    if (!db.isOpen()) {
+        // Optional: show message / log
+        // qDebug() << "DB not open";
+        ui->passwords_vertical->addStretch();
+        return;
+    }
 
+    // 3) Query the database
+    QSqlQuery query(db);
+    query.prepare("SELECT id, name, url, username, notes FROM passwords ORDER BY name");
+
+    if (!query.exec()) {
+        // qDebug() << query.lastError().text();
+        ui->passwords_vertical->addStretch();
+        return;
+    }
+
+    // 4) Populate UI
     while (query.next()) {
         int id = query.value(0).toInt();
         QString name = query.value(1).toString();
@@ -87,23 +99,29 @@ void MainWindow::refreshPasswords(){
         QString username = query.value(3).toString();
         QString notes = query.value(4).toString();
 
-        //Create UI element
-        PasswordRow *row = new PasswordRow(id, name, url, username, notes, this);
-
-        //Add it to the layout inside the scroll area
+        auto *row = new PasswordRow(id, name, url, username, notes, this);
         ui->passwords_vertical->addWidget(row);
     }
 
-    // 5. Add a "Spacer" at the bottom
-    // This pushes all items to the top so they don't stretch vertically
+    // 5) Spacer at bottom
     ui->passwords_vertical->addStretch();
+
 }
 
 //Page navigation (stacked Widget)
 void MainWindow::on_sidebar_lock_clicked()
 {
     //close DB connection
-    void closeAndLock();
+    DatabaseManager::instance().closeAndLock();
+
+    //delete password-page entries
+    while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
+        if (QWidget *w = child->widget()) {
+            w->deleteLater();
+        }
+        delete child;
+    }
+
     ui->sidebar_lock->setChecked(true);
 
     ui->stackedWidget->setCurrentIndex(0);
@@ -160,6 +178,20 @@ void MainWindow::on_sidebar_settings_clicked()
     ui->sidebar_healthcheck->setChecked(false);
     ui->sidebar_passwordgenerator->setChecked(false);
     ui->sidebar_lock->setChecked(false);
+
+    //test
+    QString test;
+
+    QSqlDatabase db = DatabaseManager::instance().db();
+    QSqlQuery query(db);
+
+    if (!query.exec("SELECT data FROM meta LIMIT 1"))
+        test = QString();
+
+    if (query.next())
+        test = query.value(0).toString();
+
+    ui->settings_line->setText(test);
 }
 
 //Open page to create new database
@@ -317,7 +349,7 @@ void MainWindow::on_lock_selectdb_clicked()
 void MainWindow::on_entermasterpassword_clicked()
 {
     //make sure existing DB is closed
-    void closeAndLock();
+    DatabaseManager::instance().closeAndLock();
 
     ui->lock_error->clear(); //clear error message
 
@@ -427,7 +459,7 @@ void MainWindow::on_passwordcreate_save_clicked()
     QString notes = ui->passwordcreate_notes->text();
 
     //create new db entry and save the file
-    int entrycode = createentry(name, tag, url, username, password, notes);
+    int entrycode = DatabaseManager::instance().createentry(name, tag, url, username, password, notes);
 
     //handle SQL-error
     if (entrycode == 0){
