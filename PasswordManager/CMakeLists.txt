@@ -39,6 +39,7 @@ qt_add_executable(PasswordManager
     include/passwordrow.h
     src/passwordrow.cpp
     ui/passwordrow.ui
+    src/createentry.cpp
 
 
 

@@ -68,16 +68,16 @@ void MainWindow::cleanupDatabase() {
 }
 
 void MainWindow::refreshPasswords(){
-    // 1. Clear existing items in the layout (optional, but good for refreshing)
+    //clear existing items in the layout
     QLayoutItem *child;
-    while ((child = ui->verticalLayout->takeAt(0)) != nullptr) {
+    while ((child = ui->passwords_vertical->takeAt(0)) != nullptr) {
         if (child->widget()) {
             child->widget()->deleteLater();
         }
         delete child;
     }
 
-    // 2. Query the database
+    //Query the database
     QSqlQuery query("SELECT id, name, url, username, notes FROM passwords");
 
     while (query.next()) {
@@ -87,16 +87,16 @@ void MainWindow::refreshPasswords(){
         QString username = query.value(3).toString();
         QString notes = query.value(4).toString();
 
-        // 3. Create your custom UI element
+        //Create UI element
         PasswordRow *row = new PasswordRow(id, name, url, username, notes, this);
 
-        // 4. Add it to the layout inside the scroll area
-        ui->verticalLayout->addWidget(row);
+        //Add it to the layout inside the scroll area
+        ui->passwords_vertical->addWidget(row);
     }
 
     // 5. Add a "Spacer" at the bottom
     // This pushes all items to the top so they don't stretch vertically
-    ui->verticalLayout->addStretch();
+    ui->passwords_vertical->addStretch();
 }
 
 //Page navigation (stacked Widget)
@@ -395,3 +395,55 @@ void MainWindow::on_genpass_gen_clicked()
 
     ui->genpass_password->setText(genPassword); //show password
 }
+
+void MainWindow::on_passwords_create_clicked()
+{
+    //go to "passwordscreate-page"
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+
+void MainWindow::on_passwordcreate_cancel_clicked()
+{
+    //clear inputs and show the passwords-page
+    ui->passwordcreate_name->clear();
+    ui->passwordcreate_tag->clear();
+    ui->passwordcreate_url->clear();
+    ui->passwordcreate_username->clear();
+    ui->passwordcreate_password->clear();
+    ui->passwordcreate_notes->clear();
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_passwordcreate_save_clicked()
+{
+    //get inputs
+    QString name = ui->passwordcreate_name->text();
+    QString tag = ui->passwordcreate_tag->text();
+    QString url = ui->passwordcreate_url->text();
+    QString username = ui->passwordcreate_username->text();
+    QString password = ui->passwordcreate_password->text();
+    QString notes = ui->passwordcreate_notes->text();
+
+    //create new db entry and save the file
+    int entrycode = createentry(name, tag, url, username, password, notes);
+
+    //handle SQL-error
+    if (entrycode == 0){
+
+    }
+
+    //refresh passwords-list
+    refreshPasswords();
+
+    //clear inputs and show the passwords-page
+    ui->passwordcreate_name->clear();
+    ui->passwordcreate_tag->clear();
+    ui->passwordcreate_url->clear();
+    ui->passwordcreate_username->clear();
+    ui->passwordcreate_password->clear();
+    ui->passwordcreate_notes->clear();
+    ui->stackedWidget->setCurrentIndex(1);
+}
+

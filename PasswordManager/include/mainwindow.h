@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSqlDatabase>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -52,7 +53,15 @@ private slots:
 
     void on_genpass_gen_clicked();
 
+    void on_passwords_create_clicked();
+
+    void on_passwordcreate_cancel_clicked();
+
+    void on_passwordcreate_save_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    QSqlDatabase m_db;
 };
 #endif // MAINWINDOW_H

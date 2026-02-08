@@ -61,8 +61,60 @@ bool loadDecryptedData(const QByteArray &decryptedData){
     // 1. Re-initialize the Qt SQL connection
     // This creates a brand new, empty database in RAM
     if (QSqlDatabase::contains("internal_db")) {
+        {
+            QSqlDatabase oldDb = QSqlDatabase::database("internal_db");
+            oldDb.close();
+        }
         QSqlDatabase::removeDatabase("internal_db");
     }
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "internal_db");
+    db.setDatabaseName(":memory:");
+
+    if (!db.open())
+        return false;
+
+    // 2. Write decrypted DB to temp file
+    QTemporaryFile tempFile;
+    if (!tempFile.open())
+        return false;
+
+    tempFile.write(decryptedData);
+    tempFile.flush();   // important
+    tempFile.close();
+
+    QSqlQuery query(db);
+
+    // 3. Attach decrypted database
+    if (!query.exec(QString(
+                        "ATTACH DATABASE '%1' AS temp_disk"
+                        ).arg(tempFile.fileName()))) {
+        return false;
+    }
+
+    // 4. Copy schema + data EXACTLY
+    query.exec("BEGIN");
+
+    query.exec(
+        "CREATE TABLE main.passwords "
+        "AS SELECT * FROM temp_disk.passwords"
+        );
+
+    query.exec(
+        "CREATE TABLE main.meta "
+        "AS SELECT * FROM temp_disk.meta"
+        );
+
+    query.exec("COMMIT");
+
+    // 5. Detach & cleanup
+    query.exec("DETACH DATABASE temp_disk");
+    tempFile.remove();
+
+    return true;
+
+
+    /*
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "internal_db");
     db.setDatabaseName(":memory:");
 
@@ -84,7 +136,7 @@ bool loadDecryptedData(const QByteArray &decryptedData){
     query.exec(
         "CREATE TABLE passwords ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "name TEXT, "
+        "name TEXT NOT NULL UNIQUE, "
         "tag TEXT, "
         "url TEXT, "
         "username TEXT, "
@@ -116,4 +168,5 @@ bool loadDecryptedData(const QByteArray &decryptedData){
     tempFile.remove();
 
     return true;
+*/
 }
