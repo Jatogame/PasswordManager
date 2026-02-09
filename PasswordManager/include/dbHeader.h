@@ -34,10 +34,19 @@ struct createDbHeader {
     const uint32_t parallelism = 1;
 };
 
+struct generatePassword {
+    const int length = 24;
+    const bool lower = true;
+    const bool upper = true;
+    const bool numbers = true;
+    const bool special = true;
+};
+
 //make access to structs global
 extern createDbHeader createMetaData;
 extern RunTimeData runTime;
 extern DbHeader metaData;
+extern generatePassword genPassword;
 
 bool createFile();
 bool loadEncryptedDb(const QString &path, const QByteArray &key);
