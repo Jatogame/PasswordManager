@@ -106,6 +106,9 @@ void MainWindow::on_sidebar_lock_clicked()
     //close DB connection
     DatabaseManager::instance().closeAndLock();
 
+    //wipe the RunTime-struct
+    wipeRuntimeStruct();
+
     //delete password-page entries
     while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
         if (QWidget *w = child->widget()) {
