@@ -19,19 +19,19 @@ void saveDatabase() {
     // 2. Version
     out << (quint8)0x02 << (quint16)4 << (quint32)metaData.version;
 
-    // 3. Salt
+    // 3. Argon2id Salt
     out << (quint8)0x03 << (quint16)metaData.salt.size();
     out.writeRawData(metaData.salt.constData(), metaData.salt.size());
 
-    // 4. Argon2 Params
+    // 4. Argon2id Params
     out << (quint8)0x04 << (quint16)12;
     out << (quint32)metaData.iterations << (quint32)metaData.memoryCost << (quint32)metaData.parallelism;
 
-    // 5. Nonce (12 bytes for ChaCha20-IETF)
+    // 5. ChaCha20 Nonce
     out << (quint8)0x05 << (quint16)metaData.nonce.size();
     out.writeRawData(metaData.nonce.constData(), metaData.nonce.size());
 
-    // 6. Encrypted SQL Data (Tag 0x06)
+    // 6. Encrypted SQL Data
     out << (quint8)0x06 << (quint32)runTime.encryptedSQL.size();
     out.writeRawData(runTime.encryptedSQL.constData(), runTime.encryptedSQL.size());
 

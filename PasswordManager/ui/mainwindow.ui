@@ -372,7 +372,7 @@ border: white;
          <string notr="true">border-radius: 5px;</string>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="lockscreen">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -670,8 +670,20 @@ QPushButton:hover {
             <layout class="QGridLayout" name="gridLayout_6">
              <item row="1" column="0">
               <widget class="QScrollArea" name="scrollArea">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(60,60,60);</string>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                </property>
                <property name="widgetResizable">
                 <bool>true</bool>
@@ -681,24 +693,34 @@ QPushButton:hover {
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>927</width>
+                  <width>913</width>
                   <height>633</height>
                  </rect>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>600</width>
+                  <height>200</height>
+                 </size>
                 </property>
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
-                <widget class="QWidget" name="verticalLayoutWidget">
-                 <property name="geometry">
-                  <rect>
-                   <x>9</x>
-                   <y>9</y>
-                   <width>911</width>
-                   <height>621</height>
-                  </rect>
-                 </property>
-                 <layout class="QVBoxLayout" name="passwords_vertical"/>
-                </widget>
+                <layout class="QGridLayout" name="gridLayout_12">
+                 <item row="0" column="0">
+                  <layout class="QVBoxLayout" name="passwords_vertical">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+                   </property>
+                  </layout>
+                 </item>
+                </layout>
                </widget>
               </widget>
              </item>
@@ -1113,6 +1135,13 @@ QPushButton:hover {
              <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="settings_line">
+               <property name="styleSheet">
+                <string notr="true">background-color:rgb(50,50,50);</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
@@ -1120,8 +1149,8 @@ QPushButton:hover {
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QLineEdit" name="settings_line">
+             <item row="2" column="0">
+              <widget class="QLineEdit" name="settings_321">
                <property name="styleSheet">
                 <string notr="true">background-color:rgb(50,50,50);</string>
                </property>

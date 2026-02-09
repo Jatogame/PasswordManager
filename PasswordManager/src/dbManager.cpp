@@ -49,18 +49,18 @@ bool DatabaseManager::loadDecryptedData(const QByteArray &decryptedData){
     m_db.setDatabaseName(":memory:");
     if (!m_db.open()) return false;
 
-    // 2. Write decrypted DB to temp file
+    //write decrypted DB to temp file
     QTemporaryFile tempFile;
     if (!tempFile.open())
         return false;
 
     tempFile.write(decryptedData);
-    tempFile.flush();   // important
+    tempFile.flush();
     tempFile.close();
 
     QSqlQuery query(m_db);
 
-    // Create the tables exactly as you defined them
+    //create the tables exactly as defined when file is created
     if (!query.exec(
             "CREATE TABLE passwords ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -87,7 +87,7 @@ bool DatabaseManager::loadDecryptedData(const QByteArray &decryptedData){
             "SELECT id, name, data FROM temp_disk.meta"
             )) return false;
 
-    // 5. Clean up
+    //clean up
     query.exec("DETACH DATABASE temp_disk");
     tempFile.remove();
 
@@ -98,13 +98,15 @@ bool DatabaseManager::loadDecryptedData(const QByteArray &decryptedData){
 //create the SQL structure
 bool DatabaseManager::createDatabaseStructure() {
 
+    m_db = QSqlDatabase::addDatabase("QSQLITE", "internal_db");
+    m_db.setDatabaseName(":memory:");
+
     if (!m_db.isOpen() && !m_db.open())
         return false;
 
     QSqlQuery query(m_db);
 
-    // 2. Create 'passwords' table
-    // Use AUTOINCREMENT for the index so you don't have to manage IDs manually
+    //create 'passwords' table
     bool success = query.exec(
         "CREATE TABLE passwords ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -119,7 +121,7 @@ bool DatabaseManager::createDatabaseStructure() {
 
     if (!success) return false;
 
-    // 3. Create 'meta' table
+    //vreate 'meta' table
     success = query.exec(
         "CREATE TABLE meta ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -152,18 +154,18 @@ bool DatabaseManager::initializeMetaData() {
 }
 
 void DatabaseManager::closeAndLock() {
-    // 1) Close the owned connection and drop the handle
+    //close the owned connection and drop the handle
     if (m_db.isValid()) {
         m_db.close();
-        m_db = QSqlDatabase();   // IMPORTANT: release Qt's handle
+        m_db = QSqlDatabase();
     }
 
-    // 2) Now it is safe to remove the connection by name
+    //remove the connection by name
     if (QSqlDatabase::contains("internal_db")) {
         QSqlDatabase::removeDatabase("internal_db");
     }
 
-    // 3) Wipe secrets (do this while buffers still exist)
+    //wipe secrets
     if (!runTime.derPass.isEmpty())
         sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
     if (!runTime.decryptedSQL.isEmpty())
@@ -172,7 +174,7 @@ void DatabaseManager::closeAndLock() {
     runTime.derPass.clear();
     runTime.decryptedSQL.clear();
 
-    // Optional: reduce capacity (not guaranteed to wipe freed memory, but reduces exposure)
+    //reduce capacity, reduces exposure
     runTime.derPass.squeeze();
     runTime.decryptedSQL.squeeze();
 }

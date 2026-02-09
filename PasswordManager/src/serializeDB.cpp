@@ -5,11 +5,11 @@
 #include "dbManager.h"
 
 QByteArray serializeDatabase() {
-    // 1. Get the source handle (the active :memory: DB)
+    //Get the source handle (the active :memory: DB)
     QSqlDatabase db = DatabaseManager::instance().db();
     sqlite3 *pInMemory = *static_cast<sqlite3**>(db.driver()->handle().data());
 
-    //2. use a temporary local file that we wipe immediately.
+    //temporary local file, wiped immediately
 
     QTemporaryFile tempFile;
     if (tempFile.open()) {

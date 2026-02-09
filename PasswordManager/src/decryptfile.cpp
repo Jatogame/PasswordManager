@@ -37,6 +37,7 @@ bool decryptDB(){
     if (DatabaseManager::instance().loadDecryptedData(decryptedData) != true){
         return false;
     }
+    if (isDatabaseAuthentic() != true) return false;
     sodium_memzero(decryptedData.data(), decryptedData.size());
 
     return true;
