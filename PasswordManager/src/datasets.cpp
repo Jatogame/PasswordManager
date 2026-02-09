@@ -1,5 +1,6 @@
 #include "dbHeader.h"
 //make access to structs global
-RunTimeData runTime;
-DbHeader metaData;
-createDbHeader createMetaData;
+struct RunTimeData runTime;
+struct DbHeader metaData;
+struct createDbHeader createMetaData;
+struct generatePassword genPassword;

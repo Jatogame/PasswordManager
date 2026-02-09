@@ -372,7 +372,7 @@ border: white;
          <string notr="true">border-radius: 5px;</string>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>6</number>
         </property>
         <widget class="QWidget" name="lockscreen">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -654,7 +654,7 @@ QPushButton:hover {
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QWidget" name="widget" native="true">
+           <widget class="QWidget" name="widget_55" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -677,7 +677,28 @@ QPushButton:hover {
                 </sizepolicy>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(60,60,60);</string>
+                <string notr="true">QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: rgb(82, 77, 77);
+    min-height: 24px;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+    background: rgb(72, 67, 67);
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+</string>
                </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
@@ -693,12 +714,12 @@ QPushButton:hover {
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>913</width>
-                  <height>633</height>
+                  <width>917</width>
+                  <height>5000</height>
                  </rect>
                 </property>
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -706,17 +727,20 @@ QPushButton:hover {
                 <property name="minimumSize">
                  <size>
                   <width>600</width>
-                  <height>200</height>
+                  <height>5000</height>
                  </size>
+                </property>
+                <property name="mouseTracking">
+                 <bool>true</bool>
                 </property>
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_12">
-                 <item row="0" column="0">
+                <layout class="QVBoxLayout" name="verticalLayout_10">
+                 <item>
                   <layout class="QVBoxLayout" name="passwords_vertical">
                    <property name="sizeConstraint">
-                    <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+                    <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
                    </property>
                   </layout>
                  </item>
@@ -743,6 +767,9 @@ QPushButton:hover {
                  <width>120</width>
                  <height>40</height>
                 </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="layoutDirection">
                 <enum>Qt::LayoutDirection::LeftToRight</enum>
@@ -956,6 +983,28 @@ QPushButton:hover {
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="styleSheet">
+                   <string notr="true">QSlider::handle{
+ background-color: rgb(82, 77, 77);
+}
+
+QSlider::groove:horizontal {
+    height: 8px;
+    border-radius: 4px;
+    background: rgb(50,50,50);;
+}
+
+QSlider::handle:horizontal {
+    width: 18px;
+    margin: -6px 0; 
+    border-radius: 9px;  
+    background: rgb(82, 77, 77);
+    border: 0px;
+}
+QSlider::handle:horizontal:hover {
+    background: rgb(72, 67, 67);
+}</string>
+                  </property>
                   <property name="minimum">
                    <number>1</number>
                   </property>
@@ -1022,7 +1071,17 @@ QPushButton:hover {
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QCheckBox:unchecked {
+    background-color: rgb(82, 77, 77);
+}
+QCheckBox:checked {
+	background-color: rgb(72, 67, 67);
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+QCheckBox { spacing: 20px}</string>
                   </property>
                   <property name="text">
                    <string>A-Z</string>
@@ -1044,7 +1103,17 @@ QPushButton:hover {
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QCheckBox:unchecked {
+    background-color: rgb(82, 77, 77);
+}
+QCheckBox:checked {
+	background-color: rgb(72, 67, 67);
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+QCheckBox { spacing: 20px}</string>
                   </property>
                   <property name="text">
                    <string>0-9</string>
@@ -1069,7 +1138,17 @@ QPushButton:hover {
                    <enum>Qt::LayoutDirection::LeftToRight</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QCheckBox:unchecked {
+    background-color: rgb(82, 77, 77);
+}
+QCheckBox:checked {
+	background-color: rgb(72, 67, 67);
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+QCheckBox { spacing: 20px}</string>
                   </property>
                   <property name="text">
                    <string>a-z</string>
@@ -1097,7 +1176,17 @@ QPushButton:hover {
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: rgb(82, 77, 77);</string>
+                   <string notr="true">QCheckBox:unchecked {
+    background-color: rgb(82, 77, 77);
+}
+QCheckBox:checked {
+	background-color: rgb(72, 67, 67);
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+QCheckBox { spacing: 10px}</string>
                   </property>
                   <property name="text">
                    <string>/ * + &amp; ...</string>
@@ -1504,24 +1593,61 @@ QPushButton:hover {
              <string notr="true">background-color: rgb(30, 30, 30);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_9">
+             <item row="5" column="0">
+              <widget class="QLineEdit" name="passwordcreate_url">
+               <property name="minimumSize">
+                <size>
+                 <width>500</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(82, 77, 77);</string>
+               </property>
+               <property name="maxLength">
+                <number>50</number>
+               </property>
+              </widget>
+             </item>
              <item row="4" column="0">
               <widget class="QLabel" name="label_5">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
                <property name="text">
                 <string>URL:</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="0">
-              <widget class="QLabel" name="label_8">
+             <item row="8" column="0">
+              <widget class="QLabel" name="label_10">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
                <property name="text">
-                <string>Username/E-Mail:</string>
+                <string>Password:</string>
                </property>
               </widget>
              </item>
-             <item row="10" column="0">
-              <widget class="QLabel" name="label_11">
-               <property name="text">
-                <string>Notes:</string>
+             <item row="3" column="0">
+              <widget class="QLineEdit" name="passwordcreate_tag">
+               <property name="minimumSize">
+                <size>
+                 <width>500</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(82, 77, 77);</string>
+               </property>
+               <property name="maxLength">
+                <number>50</number>
                </property>
               </widget>
              </item>
@@ -1534,20 +1660,10 @@ QPushButton:hover {
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color:rgb(50,50,50);</string>
+                <string notr="true">background-color: rgb(82, 77, 77);</string>
                </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLineEdit" name="passwordcreate_name">
-               <property name="minimumSize">
-                <size>
-                 <width>500</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color:rgb(50,50,50);</string>
+               <property name="maxLength">
+                <number>50</number>
                </property>
               </widget>
              </item>
@@ -1563,6 +1679,96 @@ QPushButton:hover {
                 </size>
                </property>
               </spacer>
+             </item>
+             <item row="10" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Notes:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <widget class="QLineEdit" name="passwordcreate_password">
+               <property name="minimumSize">
+                <size>
+                 <width>500</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(82, 77, 77);</string>
+               </property>
+               <property name="maxLength">
+                <number>50</number>
+               </property>
+               <property name="echoMode">
+                <enum>QLineEdit::EchoMode::Password</enum>
+               </property>
+               <property name="clearButtonEnabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Tag:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Name:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="label_8">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Username/E-Mail:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="passwordcreate_name">
+               <property name="minimumSize">
+                <size>
+                 <width>500</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(82, 77, 77);</string>
+               </property>
+               <property name="maxLength">
+                <number>50</number>
+               </property>
+              </widget>
              </item>
              <item row="13" column="0">
               <widget class="QWidget" name="widget_11" native="true">
@@ -1640,59 +1846,6 @@ QPushButton:hover {
                </layout>
               </widget>
              </item>
-             <item row="8" column="0">
-              <widget class="QLabel" name="label_10">
-               <property name="text">
-                <string>Password:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QLineEdit" name="passwordcreate_url">
-               <property name="minimumSize">
-                <size>
-                 <width>500</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color:rgb(50,50,50);</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Name:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="0">
-              <widget class="QLineEdit" name="passwordcreate_password">
-               <property name="minimumSize">
-                <size>
-                 <width>500</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color:rgb(50,50,50);</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLineEdit" name="passwordcreate_tag">
-               <property name="minimumSize">
-                <size>
-                 <width>500</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color:rgb(50,50,50);</string>
-               </property>
-              </widget>
-             </item>
              <item row="11" column="0">
               <widget class="QLineEdit" name="passwordcreate_notes">
                <property name="minimumSize">
@@ -1702,14 +1855,108 @@ QPushButton:hover {
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color:rgb(50,50,50);</string>
+                <string notr="true">background-color: rgb(82, 77, 77);</string>
+               </property>
+               <property name="maxLength">
+                <number>50</number>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_3">
+             <item row="9" column="1">
+              <widget class="QPushButton" name="passwordcreate_genpass">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>140</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>140</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+        background-color: rgb(82, 77, 77);
+        color: white;
+    }
+
+QPushButton:hover {
+        background-color: rgb(72, 67, 67);
+}
+
+    QPushButton:pressed {
+        background-color: rgb(62, 57, 57);
+    }</string>
+               </property>
                <property name="text">
-                <string>Tag:</string>
+                <string>Generate Password</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QCheckBox" name="passwordcreate_showpass">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>140</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>140</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QCheckBox:unchecked {
+    background-color: rgb(82, 77, 77);
+}
+QCheckBox:checked {
+	background-color: rgb(72, 67, 67);
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+QCheckBox { spacing: 36px}
+
+
+</string>
+               </property>
+               <property name="text">
+                <string>Show</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="tristate">
+                <bool>false</bool>
                </property>
               </widget>
              </item>

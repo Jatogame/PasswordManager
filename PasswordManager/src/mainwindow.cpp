@@ -95,9 +95,10 @@ void MainWindow::refreshPasswords(){
         QString username = query.value(3).toString();
         QString notes = query.value(4).toString();
 
-        auto *row = new PasswordRow(id, name, url, username, notes, this);
+        auto *row = new PasswordRow(id, name, url, username, notes, ui->scrollAreaWidgetContents);
         ui->passwords_vertical->addWidget(row);
     }
+    ui->passwords_vertical->addStretch(1);
 }
 
 //Page navigation (stacked Widget)
@@ -481,5 +482,26 @@ void MainWindow::on_passwordcreate_save_clicked()
     ui->passwordcreate_password->clear();
     ui->passwordcreate_notes->clear();
     ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_passwordcreate_genpass_clicked()
+{
+    //get data for generating password
+    int length = genPassword.length;
+    bool lower = genPassword.lower;
+    bool upper = genPassword.upper;
+    bool numbers = genPassword.numbers;
+    bool special = genPassword.special;
+    QString genPassword = generatePassword(length, lower, upper, numbers, special);
+    ui->passwordcreate_password->setText(genPassword);
+}
+
+
+void MainWindow::on_passwordcreate_showpass_toggled(bool checked)
+{
+    ui->passwordcreate_password->setEchoMode(
+        checked ? QLineEdit::Normal : QLineEdit::Password
+        );
 }
 

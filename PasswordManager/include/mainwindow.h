@@ -59,6 +59,10 @@ private slots:
 
     void on_passwordcreate_save_clicked();
 
+    void on_passwordcreate_genpass_clicked();
+
+    void on_passwordcreate_showpass_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
 
