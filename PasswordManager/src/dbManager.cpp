@@ -32,8 +32,17 @@ int DatabaseManager::createentry(QString& name, QString& tag, QString& url, QStr
     query.addBindValue(notes);
 
     if (!query.exec()) {
-        return -1;
+        const QSqlError err = query.lastError();
+
+        // SQLite: "UNIQUE constraint failed: passwords.name"
+        // Also commonly has nativeErrorCode() == "19" (SQLITE_CONSTRAINT)
+        if (err.nativeErrorCode() == "19" || err.text().contains("UNIQUE", Qt::CaseInsensitive)) {
+            return -1;
+        }
+
+        return -2;
     }
+
     return query.lastInsertId().toInt();
 }
 

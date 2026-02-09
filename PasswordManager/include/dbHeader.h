@@ -12,8 +12,8 @@
 struct DbHeader {
     uint32_t version = 1;
     QByteArray salt;      // 16 Bytes
-    uint32_t iterations = 10;
-    uint32_t memoryCost = 2147483648; // 2GB, but carefull with overflow
+    uint32_t iterations = 1;
+    uint32_t memoryCost = 2147483648; // 2GiB, but carefull with overflow
     uint32_t parallelism = 1;
     QByteArray nonce;     // 12 Bytes
     QByteArray authTag;   // 16 Bytes
@@ -29,8 +29,8 @@ struct RunTimeData {
 
 struct createDbHeader {
     const uint32_t version = 1;
-    const uint32_t iterations = 10;
-    const uint32_t memoryCost = 2147483648; // 2GB, but carefull with overflow
+    const uint32_t iterations = 1;
+    const uint32_t memoryCost = 2147483648; // 2GiB, but carefull with overflow
     const uint32_t parallelism = 1;
 };
 

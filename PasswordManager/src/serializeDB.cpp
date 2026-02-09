@@ -7,7 +7,7 @@
 QByteArray serializeDatabase() {
     //Get the source handle (the active :memory: DB)
     QSqlDatabase db = DatabaseManager::instance().db();
-    sqlite3 *pInMemory = *static_cast<sqlite3**>(db.driver()->handle().data());
+    //sqlite3 *pInMemory = *static_cast<sqlite3**>(db.driver()->handle().data());
 
     //temporary local file, wiped immediately
 

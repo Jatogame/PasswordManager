@@ -422,6 +422,7 @@ void MainWindow::on_passwords_create_clicked()
 void MainWindow::on_passwordcreate_cancel_clicked()
 {
     //clear inputs and show the passwords-page
+    ui->passwordcreate_error->clear();
     ui->passwordcreate_name->clear();
     ui->passwordcreate_tag->clear();
     ui->passwordcreate_url->clear();
@@ -434,6 +435,7 @@ void MainWindow::on_passwordcreate_cancel_clicked()
 
 void MainWindow::on_passwordcreate_save_clicked()
 {
+    ui->passwordcreate_error->clear();
     //get inputs
     QString name = ui->passwordcreate_name->text();
     QString tag = ui->passwordcreate_tag->text();
@@ -443,9 +445,11 @@ void MainWindow::on_passwordcreate_save_clicked()
     QString notes = ui->passwordcreate_notes->text();
 
     //check if empty
-    if(name.trimmed().isEmpty() || username.trimmed().isEmpty() || password.trimmed().isEmpty()){
+    if(name.trimmed().isEmpty()){
+        ui->passwordcreate_error->setText("Name empty");
         return;
     }
+
 
     //create new db entry and save the file
     int entrycode = DatabaseManager::instance().createentry(name, tag, url, username, password, notes);
@@ -454,8 +458,13 @@ void MainWindow::on_passwordcreate_save_clicked()
     saveDatabase();
 
     //handle SQL-error
-    if (entrycode == 0){
-
+    if (entrycode == -1){
+        ui->passwordcreate_error->setText("Entry \"" + name + "\" already exists");
+        return;
+    }
+    if (entrycode == -2){
+        ui->passwordcreate_error->setText("Error: Adding new entry failed.");
+        return;
     }
 
     //refresh passwords-list
