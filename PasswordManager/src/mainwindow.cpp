@@ -75,9 +75,6 @@ void MainWindow::refreshPasswords(){
     // 2) Get the open DB connection from your manager
     QSqlDatabase db = DatabaseManager::instance().db();
     if (!db.isOpen()) {
-        // Optional: show message / log
-        // qDebug() << "DB not open";
-        ui->passwords_vertical->addStretch();
         return;
     }
 
@@ -87,7 +84,6 @@ void MainWindow::refreshPasswords(){
 
     if (!query.exec()) {
         // qDebug() << query.lastError().text();
-        ui->passwords_vertical->addStretch();
         return;
     }
 
@@ -102,10 +98,6 @@ void MainWindow::refreshPasswords(){
         auto *row = new PasswordRow(id, name, url, username, notes, this);
         ui->passwords_vertical->addWidget(row);
     }
-
-    // 5) Spacer at bottom
-    ui->passwords_vertical->addStretch();
-
 }
 
 //Page navigation (stacked Widget)
@@ -178,20 +170,6 @@ void MainWindow::on_sidebar_settings_clicked()
     ui->sidebar_healthcheck->setChecked(false);
     ui->sidebar_passwordgenerator->setChecked(false);
     ui->sidebar_lock->setChecked(false);
-
-    //test
-    QString test;
-
-    QSqlDatabase db = DatabaseManager::instance().db();
-    QSqlQuery query(db);
-
-    if (!query.exec("SELECT data FROM meta LIMIT 1"))
-        test = QString();
-
-    if (query.next())
-        test = query.value(0).toString();
-
-    ui->settings_line->setText(test);
 }
 
 //Open page to create new database
@@ -268,6 +246,11 @@ void MainWindow::on_createdb_create_clicked()
     //check if passwords match
     if (masterPasswordStr != confirmPasswordStr) {
         ui->createdb_error->setText("Passwords don't match");
+        return;
+    }
+    //check if password is empty
+    if (masterPasswordStr.trimmed().isEmpty()) {
+        ui->createdb_error->setText("Password empty");
         return;
     }
 
@@ -387,6 +370,7 @@ void MainWindow::on_entermasterpassword_clicked()
     }
 
     //open passwords-page
+    refreshPasswords();
     ui->sidebar_passwords->setChecked(true);
     ui->stackedWidget->setCurrentIndex(1);
     ui->sidebar_lock->setChecked(false);
@@ -458,8 +442,16 @@ void MainWindow::on_passwordcreate_save_clicked()
     QString password = ui->passwordcreate_password->text();
     QString notes = ui->passwordcreate_notes->text();
 
+    //check if empty
+    if(name.trimmed().isEmpty() || username.trimmed().isEmpty() || password.trimmed().isEmpty()){
+        return;
+    }
+
     //create new db entry and save the file
     int entrycode = DatabaseManager::instance().createentry(name, tag, url, username, password, notes);
+
+    //save database
+    saveDatabase();
 
     //handle SQL-error
     if (entrycode == 0){

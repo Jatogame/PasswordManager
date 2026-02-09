@@ -8,7 +8,6 @@ class DatabaseManager
 public:
     static DatabaseManager& instance();
 
-    bool openDecrypted(const QByteArray& decryptedData);
     int createentry(QString& name, QString& tag, QString& url, QString& username, QString& password, QString& notes);
     bool loadDecryptedData(const QByteArray &decryptedData);
     bool createDatabaseStructure();

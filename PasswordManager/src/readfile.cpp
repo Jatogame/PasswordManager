@@ -29,18 +29,18 @@ bool loadDatabase() {
             in >> metaData.version;
             break;
         }
-        case 0x03: { // Salt
+        case 0x03: { // Argon2id Salt
             quint16 len; in >> len;
             metaData.salt.resize(len);
             in.readRawData(metaData.salt.data(), len);
             break;
         }
-        case 0x04: { // Argon2 Params
+        case 0x04: { // Argon2id Params
             quint16 len; in >> len;
             in >> metaData.iterations >> metaData.memoryCost >> metaData.parallelism;
             break;
         }
-        case 0x05: { // Nonce
+        case 0x05: { // ChaCha20 Nonce
             quint16 len; in >> len;
             metaData.nonce.resize(len);
             in.readRawData(metaData.nonce.data(), len);
@@ -53,8 +53,7 @@ bool loadDatabase() {
             break;
         }
         default: {
-            // Unknown tag? Read the next 2 bytes as length and skip it.
-            // makes the file format "Forward Compatible"
+            // Unknown tag: Read the next 2 bytes as length and skip it.
             quint16 unknownLen; in >> unknownLen;
             in.skipRawData(unknownLen);
             break;

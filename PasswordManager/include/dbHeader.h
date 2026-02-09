@@ -46,13 +46,9 @@ void encryptDB();
 bool createDerPassword(QByteArray masterPassword);
 bool derivePassword(QByteArray masterPassword);
 QByteArray serializeDatabase();
-//bool createDatabaseStructure();
-//bool initializeMetaData();
-//void closeAndLock();
 bool loadDatabase();
 bool decryptDB();
-//bool loadDecryptedData(const QByteArray &decryptedData);
-//bool isDatabaseAuthentic();
+bool isDatabaseAuthentic();
 QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbers, bool useSpecial);
 
 #endif // DBHEADER_H
