@@ -59,5 +59,7 @@ bool loadDatabase();
 bool decryptDB();
 bool isDatabaseAuthentic();
 QString generatePassword(int length, bool useLower, bool useUpper, bool useNumbers, bool useSpecial);
+QString sha1UpperHex(const QString &password);
+int parsePwnedCount(const QByteArray &body, const QString &wantedSuffixUpper);
 
 #endif // DBHEADER_H
