@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSqlDatabase>
+#include <qnetworkaccessmanager.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,8 +24,26 @@ public:
     //clean runTime struct
     void wipeRuntimeStruct();
 
+    void refreshPasswords(const QString &filter);
+
     void refreshPasswords();
 
+    void checkPasswordWithHIBP(const QString &password, std::function<void(int)> onDone);
+
+    //Items for health-check-page
+    struct HealthItem {
+        int id;
+        QString name;
+        QString password;   // you need plaintext here to hash; decrypt on demand if you store encrypted
+    };
+
+    QVector<HealthItem> m_healthQueue;
+    int m_healthIndex = 0;
+
+    void runNextHealthCheck();
+    void addPwnedLine(const QString &name, int count);
+
+    //destructor
     ~MainWindow();
 
 private slots:
@@ -77,7 +96,11 @@ private slots:
 
     void on_passwordedit_showpass_toggled(bool checked);
 
+    void on_healthcheck_check_clicked();
+
 private:
+    QNetworkAccessManager *networkAccessManager;
+
     int m_currentEditId = -1;
 
     Ui::MainWindow *ui;

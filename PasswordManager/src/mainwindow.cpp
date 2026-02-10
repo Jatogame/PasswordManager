@@ -10,10 +10,15 @@
 #include <QProgressDialog>
 #include <QTimer>
 #include <QMessageBox>
+#include <QCryptographicHash>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , networkAccessManager(new QNetworkAccessManager(this))
 {
     ui->setupUi(this);
 
@@ -21,6 +26,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->genpass_slider, &QSlider::valueChanged, this, [=](int value) {
         ui->genpass_slidervalue->setText(QString::number(value));
     });
+
+    //searchbar auto-refresh password-page
+    connect(ui->passwords_search, &QLineEdit::textChanged,
+            this, [this](const QString &text){
+                refreshPasswords(text);
+            });
 }
 
 MainWindow::~MainWindow()
@@ -59,9 +70,13 @@ void MainWindow::wipeRuntimeStruct()
 void MainWindow::cleanupDatabase()
 {
     DatabaseManager::instance().closeAndLock();
+
     //clear clipboard
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->clear();
+    clipboard->clear(QClipboard::Clipboard);      // Ctrl+C clipboard
+    clipboard->clear(QClipboard::Selection);      // Middle-click selection (Linux)
+
     //delete entries in the passwords-page
     while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
         if (QWidget *w = child->widget()) {
@@ -69,11 +84,30 @@ void MainWindow::cleanupDatabase()
         }
         delete child;
     }
+
+    //Clear scroll area of health-check-page
+    auto *layout = ui->scrollAreaWidgetContents_2->layout();
+
+    while (QLayoutItem *child = layout->takeAt(0)) {
+        if (QWidget *w = child->widget()){
+            w->deleteLater();
+        }
+        delete child;
+    }
+
+    ui->passwords_search->clear();//clear search-field
 }
 
+//refresh passwordlist without search-filter
 void MainWindow::refreshPasswords()
 {
-    // 1) Clear existing items
+    refreshPasswords(ui->passwords_search ? ui->passwords_search->text() : QString());
+}
+
+//refresh passwordlist with search-filter
+void MainWindow::refreshPasswords(const QString &filter)
+{
+    //Clear existing items
     while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
         if (QWidget *w = child->widget()) {
             w->deleteLater();
@@ -81,15 +115,29 @@ void MainWindow::refreshPasswords()
         delete child;
     }
 
-    // 2) Get the open DB connection from your manager
+    //Get the open DB connection from the manager
     QSqlDatabase db = DatabaseManager::instance().db();
     if (!db.isOpen()) {
         return;
     }
 
-    // 3) Query the database
+    //Query the database
     QSqlQuery query(db);
-    query.prepare("SELECT id, name, url, username, notes FROM passwords ORDER BY name");
+
+    const QString f = filter.trimmed();
+
+    //apply filter if not empty
+    if (f.isEmpty()) {
+        query.prepare("SELECT id, name, url, username, notes "
+                      "FROM passwords ORDER BY name COLLATE NOCASE");
+    } else {
+        // Search multiple columns; use LIKE with bound values
+        query.prepare("SELECT id, name, url, username, notes "
+                      "FROM passwords "
+                      "WHERE name LIKE :q OR url LIKE :q OR username LIKE :q OR notes LIKE :q "
+                      "ORDER BY name COLLATE NOCASE");
+        query.bindValue(":q", "%" + f + "%");
+    }
 
     if (!query.exec()) {
         // qDebug() << query.lastError().text();
@@ -182,24 +230,21 @@ void MainWindow::editPasswordEntry(int id)
 //Page navigation (stacked Widget)
 void MainWindow::on_sidebar_lock_clicked()
 {
-    //close DB connection
-    DatabaseManager::instance().closeAndLock();
+    //clear DB and clear passwords-page
+    cleanupDatabase();
 
     //wipe the RunTime-struct
     wipeRuntimeStruct();
 
-    //delete password-page entries
-    while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
-        if (QWidget *w = child->widget()) {
-            w->deleteLater();
-        }
-        delete child;
-    }
+    //reset password-generator page
+    ui->genpass_password->clear();
+    ui->genpass_lower->setChecked(genPassword.lower);
+    ui->genpass_upper->setChecked(genPassword.upper);
+    ui->genpass_numbers->setChecked(genPassword.numbers);
+    ui->genpass_special->setChecked(genPassword.special);
+    ui->genpass_slider->setValue(genPassword.length);
 
-    //clear clipboard
-    QClipboard *clipboard = QGuiApplication::clipboard();
-    clipboard->clear();
-
+    //set UI elements
     ui->sidebar_lock->setChecked(true);
 
     ui->stackedWidget->setCurrentIndex(0);
@@ -650,11 +695,24 @@ void MainWindow::on_passwordedit_save_clicked()
     QString password = ui->passwordedit_password->text();
     QString notes = ui->passwordedit_notes->text();
 
+    //check if DB is open
+    QSqlDatabase db = DatabaseManager::instance().db();
+    if (!db.isOpen()) {
+        ui->passwordedit_error->setText("No DB open");
+        return;
+    }
+
     //check if empty
     if(name.trimmed().isEmpty()){
         ui->passwordedit_error->setText("Name empty");
         return;
     }
+
+    //MessageBox saying that the changes cannot be undone
+    if (QMessageBox::question(this, "Save entry",
+                              "Really save this entry? This cannot be undone.")
+        != QMessageBox::Yes)
+        return;
 
     //create new db entry and save the file
     int entrycode = DatabaseManager::instance().editentry(m_currentEditId, name, tag, url, username, password, notes);
@@ -706,3 +764,113 @@ void MainWindow::on_passwordedit_showpass_toggled(bool checked)
         );
 }
 
+void MainWindow::checkPasswordWithHIBP(const QString &password, std::function<void(int)> onDone)
+{
+    const QString full = sha1UpperHex(password);
+    const QString prefix = full.left(5);
+    const QString suffix = full.mid(5);
+
+    QNetworkRequest req(QUrl("https://api.pwnedpasswords.com/range/" + prefix));
+    req.setRawHeader("Add-Padding", "true");
+    req.setRawHeader("User-Agent", "MyPasswordManager/1.0");
+
+    auto *reply = networkAccessManager->get(req);
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply, suffix, onDone]() {
+        const int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        const QByteArray body = reply->readAll();
+
+        int count = 0;
+        if (reply->error() == QNetworkReply::NoError && status == 200) {
+            count = parsePwnedCount(body, suffix);
+        }
+
+        reply->deleteLater();
+        onDone(count);  // <- deliver result here
+    });
+}
+
+
+void MainWindow::on_healthcheck_check_clicked()
+{
+    //Clear previous results in scroll area
+    auto *layout = ui->scrollAreaWidgetContents_2->layout();
+
+    //clear Layout
+    while (QLayoutItem *child = layout->takeAt(0)) {
+        if (QWidget *w = child->widget()) w->deleteLater();
+        delete child;
+    }
+
+    //Load entries from DB
+    QSqlDatabase db = DatabaseManager::instance().db();
+    if (!db.isOpen()) {
+        return;
+    }
+
+    QSqlQuery q(db);
+    q.prepare("SELECT id, name, password FROM passwords ORDER BY name COLLATE NOCASE");
+
+    if (!q.exec()) {
+        return;
+    }
+
+    m_healthQueue.clear();
+    while (q.next()) {
+        HealthItem item;
+        item.id = q.value(0).toInt();
+        item.name = q.value(1).toString();
+
+        item.password = q.value(2).toString();
+
+        //Skip empty passwords
+        if (!item.password.isEmpty())
+            m_healthQueue.push_back(item);
+    }
+
+    m_healthIndex = 0;
+
+    //Start sequential checking
+    runNextHealthCheck();
+}
+
+void MainWindow::runNextHealthCheck()
+{
+    //find the status label (first widget)
+    auto *layout = ui->scrollAreaWidgetContents_2->layout();
+    QLabel *statusLabel = nullptr;
+    if (layout && layout->count() > 0) {
+        statusLabel = qobject_cast<QLabel*>(layout->itemAt(0)->widget());
+    }
+
+    if (m_healthIndex >= m_healthQueue.size()) {
+        if (statusLabel) statusLabel->setText("Health check finished.");
+        return;
+    }
+
+    const auto item = m_healthQueue[m_healthIndex++];
+    if (statusLabel) {
+        statusLabel->setText(QString("Checking %1 (%2/%3)…")
+                                 .arg(item.name)
+                                 .arg(m_healthIndex)
+                                 .arg(m_healthQueue.size()));
+    }
+
+    checkPasswordWithHIBP(item.password, [this, item](int count) {
+        if (count > 0) {
+            addPwnedLine(item.name, count);
+        }
+        runNextHealthCheck(); //continue with next entry
+    });
+}
+
+void MainWindow::addPwnedLine(const QString &name, int count)
+{
+    auto *layout = ui->scrollAreaWidgetContents_2->layout();
+
+    //Add label line
+    auto *line = new QLabel(QString("⚠ %1 (pwned %2 times)").arg(name).arg(count),
+                            ui->scrollAreaWidgetContents_2);
+    line->setWordWrap(true);
+    layout->addWidget(line);
+}

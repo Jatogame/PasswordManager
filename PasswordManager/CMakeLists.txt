@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(PasswordManager LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Sql)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Sql Network)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
 
@@ -30,7 +30,7 @@ qt_add_executable(PasswordManager
     src/derivePassword.cpp
     src/datasets.cpp
     src/serializeDB.cpp
-    src/closeLock.cpp
+
     src/decryptfile.cpp
     src/passwordgenerator.cpp
 
@@ -42,6 +42,7 @@ qt_add_executable(PasswordManager
 
     include/dbManager.h
     src/dbManager.cpp
+    src/haveIbeenPwned.cpp
 
 
 
@@ -55,6 +56,7 @@ qt_add_executable(PasswordManager
 target_include_directories(${PROJECT_NAME} PRIVATE ${SODIUM_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SODIUM_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE sqlite3)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
 
 target_link_libraries(PasswordManager
     PRIVATE
