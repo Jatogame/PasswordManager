@@ -9,6 +9,7 @@ public:
     static DatabaseManager& instance();
 
     int createentry(QString& name, QString& tag, QString& url, QString& username, QString& password, QString& notes);
+    int editentry(int id, QString& name, QString& tag, QString& url, QString& username, QString& password, QString& notes);
     bool loadDecryptedData(const QByteArray &decryptedData);
     bool createDatabaseStructure();
     bool initializeMetaData();

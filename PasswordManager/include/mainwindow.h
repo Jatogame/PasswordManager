@@ -63,7 +63,23 @@ private slots:
 
     void on_passwordcreate_showpass_toggled(bool checked);
 
+    void copyRowPassword(int id);
+
+    void editPasswordEntry(int id);
+
+    void on_passwordedit_delete_clicked();
+
+    void on_passwordedit_cancel_clicked();
+
+    void on_passwordedit_save_clicked();
+
+    void on_passwordedit_genpass_clicked();
+
+    void on_passwordedit_showpass_toggled(bool checked);
+
 private:
+    int m_currentEditId = -1;
+
     Ui::MainWindow *ui;
 
     QSqlDatabase m_db;

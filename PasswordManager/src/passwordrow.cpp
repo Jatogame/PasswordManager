@@ -7,10 +7,19 @@ PasswordRow::PasswordRow(int id, QString name, QString url, QString username, QS
     , m_id(id)
 {
     ui->setupUi(this);
-    ui->password_name->setText(name);
-    ui->password_url->setText(url);
-    ui->password_username->setText(username);
-    ui->password_notes->setText(notes);
+    ui->passshow_name->setText(name);
+    ui->passshow_url->setText(url);
+    ui->passshow_username->setText(username);
+    ui->passshow_notes->setText(notes);
+
+    //connect copy-password button
+    connect(ui->passshow_passcopy, &QPushButton::clicked, this, [this]()  {
+        emit copyPassword(m_id);
+    });
+
+    connect(ui->passshow_edit, &QPushButton::clicked, this, [this]()  {
+        emit editEntry(m_id);
+    });
 }
 
 PasswordRow::~PasswordRow()

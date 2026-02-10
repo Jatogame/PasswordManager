@@ -12,8 +12,9 @@ QSqlDatabase DatabaseManager::db() const
     return m_db;
 }
 
-int DatabaseManager::createentry(QString& name, QString& tag, QString& url, QString& username, QString& password, QString& notes){
-    //create new db entry and save the file
+int DatabaseManager::createentry(QString& name, QString& tag, QString& url, QString& username, QString& password, QString& notes)
+{
+    //create new db entry
 
     if (!m_db.isOpen()) return -1;
 
@@ -35,7 +36,6 @@ int DatabaseManager::createentry(QString& name, QString& tag, QString& url, QStr
         const QSqlError err = query.lastError();
 
         // SQLite: "UNIQUE constraint failed: passwords.name"
-        // Also commonly has nativeErrorCode() == "19" (SQLITE_CONSTRAINT)
         if (err.nativeErrorCode() == "19" || err.text().contains("UNIQUE", Qt::CaseInsensitive)) {
             return -1;
         }
@@ -46,7 +46,49 @@ int DatabaseManager::createentry(QString& name, QString& tag, QString& url, QStr
     return query.lastInsertId().toInt();
 }
 
-bool DatabaseManager::loadDecryptedData(const QByteArray &decryptedData){
+int DatabaseManager::editentry(int id, QString& name, QString& tag, QString& url, QString& username, QString& password, QString& notes)
+{
+    //edit an existing db entry
+
+    if (!m_db.isOpen()) return -1;
+
+    QSqlQuery query(m_db);
+
+    query.prepare(
+        "UPDATE passwords SET "
+        "name = ?, "
+        "tag = ?, "
+        "url = ?, "
+        "username = ?, "
+        "password = ?, "
+        "notes = ? "
+        "WHERE id = ?"
+        );
+
+    query.addBindValue(name);
+    query.addBindValue(tag);
+    query.addBindValue(url);
+    query.addBindValue(username);
+    query.addBindValue(password);
+    query.addBindValue(notes);
+    query.addBindValue(id);
+
+    if (!query.exec()) {
+        const QSqlError err = query.lastError();
+
+        // SQLite: "UNIQUE constraint failed: passwords.name"
+        if (err.nativeErrorCode() == "19" || err.text().contains("UNIQUE", Qt::CaseInsensitive)) {
+            return -1;
+        }
+
+        return -2;
+    }
+
+    return query.lastInsertId().toInt();
+}
+
+bool DatabaseManager::loadDecryptedData(const QByteArray &decryptedData)
+{
 
     if (m_db.isValid()) {
         m_db.close();
@@ -105,7 +147,8 @@ bool DatabaseManager::loadDecryptedData(const QByteArray &decryptedData){
 
 
 //create the SQL structure
-bool DatabaseManager::createDatabaseStructure() {
+bool DatabaseManager::createDatabaseStructure()
+{
 
     m_db = QSqlDatabase::addDatabase("QSQLITE", "internal_db");
     m_db.setDatabaseName(":memory:");
@@ -145,7 +188,8 @@ bool DatabaseManager::createDatabaseStructure() {
 }
 
 //add entry to check if database was decrypted correctly
-bool DatabaseManager::initializeMetaData() {
+bool DatabaseManager::initializeMetaData()
+{
     if (!m_db.isOpen())
         return false;
 
@@ -162,7 +206,8 @@ bool DatabaseManager::initializeMetaData() {
     return true;
 }
 
-void DatabaseManager::closeAndLock() {
+void DatabaseManager::closeAndLock()
+{
     //close the owned connection and drop the handle
     if (m_db.isValid()) {
         m_db.close();

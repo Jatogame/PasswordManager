@@ -4,9 +4,12 @@
 #include "passwordrow.h"
 #include "dbManager.h"
 #include <QDir>
+#include <QClipboard>
 #include <QFileDialog>
 #include <QSqlDatabase>
 #include <QProgressDialog>
+#include <QTimer>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -34,7 +37,8 @@ void MainWindow::open_locked()
 }
 
 //delete data in struct when closing Application
-void MainWindow::wipeRuntimeStruct() {
+void MainWindow::wipeRuntimeStruct()
+{
     // 1. SENSITIVE: Wipe binary keys/data with Libsodium
     if (!runTime.derPass.isEmpty()) {
         sodium_memzero(runTime.derPass.data(), runTime.derPass.size());
@@ -52,8 +56,12 @@ void MainWindow::wipeRuntimeStruct() {
 }
 
 //delete DB connection before exiting Application
-void MainWindow::cleanupDatabase() {
+void MainWindow::cleanupDatabase()
+{
     DatabaseManager::instance().closeAndLock();
+    //clear clipboard
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->clear();
     //delete entries in the passwords-page
     while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
         if (QWidget *w = child->widget()) {
@@ -63,7 +71,8 @@ void MainWindow::cleanupDatabase() {
     }
 }
 
-void MainWindow::refreshPasswords(){
+void MainWindow::refreshPasswords()
+{
     // 1) Clear existing items
     while (QLayoutItem *child = ui->passwords_vertical->takeAt(0)) {
         if (QWidget *w = child->widget()) {
@@ -96,9 +105,78 @@ void MainWindow::refreshPasswords(){
         QString notes = query.value(4).toString();
 
         auto *row = new PasswordRow(id, name, url, username, notes, ui->scrollAreaWidgetContents);
+
+        //copy-password button
+        connect(row, &PasswordRow::copyPassword, this, &MainWindow::copyRowPassword);
+
+        //edit button
+        connect(row, &PasswordRow::editEntry, this, &MainWindow::editPasswordEntry);
+
         ui->passwords_vertical->addWidget(row);
     }
     ui->passwords_vertical->addStretch(1);
+}
+
+void MainWindow::copyRowPassword(int id)
+{
+    QSqlDatabase db = DatabaseManager::instance().db();
+    if (!db.isOpen()) {
+        return;
+    }
+
+    QSqlQuery query(db);
+
+    query.prepare("SELECT password FROM passwords WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec() || !query.next()) {
+        //error
+        return;
+    }
+
+    const QString password = query.value(0).toString();
+
+    QClipboard *cb = QGuiApplication::clipboard();
+    cb->setText(password, QClipboard::Clipboard);
+}
+
+void MainWindow::editPasswordEntry(int id)
+{
+    //go to passwordedit-page
+    ui->stackedWidget->setCurrentIndex(7);
+
+    //safe the id, so the page doesn't forget it's id
+    m_currentEditId = id;
+
+    //Select data from DB and paste it
+    QSqlDatabase db = DatabaseManager::instance().db();
+    if (!db.isOpen()) {
+        return;
+    }
+
+    QSqlQuery query(db);
+
+    query.prepare("SELECT name, tag, url, username, password, notes FROM passwords WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec() || !query.next()) {
+        //error
+        return;
+    }
+    QString name = query.value(0).toString();
+    QString tag = query.value(1).toString();
+    QString url = query.value(2).toString();
+    QString username = query.value(3).toString();
+    QString password = query.value(4).toString();
+    QString notes = query.value(5).toString();
+
+    //paste the data into the ui
+    ui->passwordedit_name->setText(name);
+    ui->passwordedit_tag->setText(tag);
+    ui->passwordedit_url->setText(url);
+    ui->passwordedit_username->setText(username);
+    ui->passwordedit_password->setText(password);
+    ui->passwordedit_notes->setText(notes);
 }
 
 //Page navigation (stacked Widget)
@@ -117,6 +195,10 @@ void MainWindow::on_sidebar_lock_clicked()
         }
         delete child;
     }
+
+    //clear clipboard
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->clear();
 
     ui->sidebar_lock->setChecked(true);
 
@@ -211,7 +293,6 @@ void MainWindow::on_createdb_selectpath_clicked()
     } else{
         ui->createdb_displaypath->setText(pathCreate);
     }
-
 }
 
 //Cancel the creation of a new database
@@ -501,6 +582,126 @@ void MainWindow::on_passwordcreate_genpass_clicked()
 void MainWindow::on_passwordcreate_showpass_toggled(bool checked)
 {
     ui->passwordcreate_password->setEchoMode(
+        checked ? QLineEdit::Normal : QLineEdit::Password
+        );
+}
+
+void MainWindow::on_passwordedit_delete_clicked()
+{
+    if (m_currentEditId < 0)
+        return;
+
+    if (QMessageBox::question(this, "Delete entry",
+                              "Really delete this entry? This cannot be undone.")
+        != QMessageBox::Yes)
+        return;
+
+    QSqlDatabase db = DatabaseManager::instance().db();
+    if (!db.isOpen()) {
+        return;
+    }
+
+    QSqlQuery query(db);
+
+    query.prepare("DELETE FROM passwords WHERE id = :id");
+    query.bindValue(":id", m_currentEditId);
+
+    if (!query.exec()) {
+        QMessageBox::warning(this, "Error", "Failed to delete entry.");
+        return;
+    }
+
+    //overwrite current id
+    m_currentEditId = -1;
+
+    //save database
+    saveDatabase();
+
+    //load password-list new
+    refreshPasswords();
+
+    //go back to passwords-page
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_passwordedit_cancel_clicked()
+{
+    //clear inputs and show the passwords-page
+    ui->passwordedit_error->clear();
+    ui->passwordedit_name->clear();
+    ui->passwordedit_tag->clear();
+    ui->passwordedit_url->clear();
+    ui->passwordedit_username->clear();
+    ui->passwordedit_password->clear();
+    ui->passwordedit_notes->clear();
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_passwordedit_save_clicked()
+{
+    ui->passwordcreate_error->clear();
+    //get inputs
+    QString name = ui->passwordedit_name->text();
+    QString tag = ui->passwordedit_tag->text();
+    QString url = ui->passwordedit_url->text();
+    QString username = ui->passwordedit_username->text();
+    QString password = ui->passwordedit_password->text();
+    QString notes = ui->passwordedit_notes->text();
+
+    //check if empty
+    if(name.trimmed().isEmpty()){
+        ui->passwordedit_error->setText("Name empty");
+        return;
+    }
+
+    //create new db entry and save the file
+    int entrycode = DatabaseManager::instance().editentry(m_currentEditId, name, tag, url, username, password, notes);
+
+    //save database
+    saveDatabase();
+
+    //handle SQL-error
+    if (entrycode == -1){
+        ui->passwordedit_error->setText("Entry \"" + name + "\" already exists");
+        return;
+    }
+    if (entrycode == -2){
+        ui->passwordedit_error->setText("Error: Adding new entry failed.");
+        return;
+    }
+
+    //refresh passwords-list
+    refreshPasswords();
+
+    //clear inputs and show the passwords-page
+    ui->passwordedit_name->clear();
+    ui->passwordedit_tag->clear();
+    ui->passwordedit_url->clear();
+    ui->passwordedit_username->clear();
+    ui->passwordedit_password->clear();
+    ui->passwordedit_notes->clear();
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_passwordedit_genpass_clicked()
+{
+    //get data for generating password
+    int length = genPassword.length;
+    bool lower = genPassword.lower;
+    bool upper = genPassword.upper;
+    bool numbers = genPassword.numbers;
+    bool special = genPassword.special;
+    QString genPassword = generatePassword(length, lower, upper, numbers, special);
+    ui->passwordedit_password->setText(genPassword);
+}
+
+
+void MainWindow::on_passwordedit_showpass_toggled(bool checked)
+{
+    ui->passwordedit_password->setEchoMode(
         checked ? QLineEdit::Normal : QLineEdit::Password
         );
 }
