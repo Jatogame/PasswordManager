@@ -15,6 +15,10 @@ public:
     explicit PasswordRow(int id, QString name, QString url, QString username, QString notes, QWidget *parent = nullptr);
     ~PasswordRow();
 
+signals:
+    void copyPassword(int id);
+    void editEntry(int id);
+
 private:
     Ui::PasswordRow *ui;
     int m_id;
