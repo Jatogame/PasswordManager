@@ -25,6 +25,11 @@
   <property name="windowTitle">
    <string notr="true">JaPass</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel, QCheckBox, QLineEdit, QPushButton, QTextEdit {
+    color: white;
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
     <bool>true</bool>
@@ -372,7 +377,7 @@ border: white;
          <string notr="true">border-radius: 5px;</string>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="lockscreen">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -678,13 +683,13 @@ QPushButton:hover {
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>120</width>
+                 <width>160</width>
                  <height>40</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>120</width>
+                 <width>160</width>
                  <height>40</height>
                 </size>
                </property>
@@ -725,7 +730,7 @@ QPushButton:hover {
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>120</width>
+                   <width>160</width>
                    <height>30</height>
                   </size>
                  </property>
@@ -733,7 +738,7 @@ QPushButton:hover {
                   <string>Search:</string>
                  </property>
                  <property name="alignment">
-                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
