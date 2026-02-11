@@ -772,7 +772,7 @@ void MainWindow::checkPasswordWithHIBP(const QString &password, std::function<vo
 
     QNetworkRequest req(QUrl("https://api.pwnedpasswords.com/range/" + prefix));
     req.setRawHeader("Add-Padding", "true");
-    req.setRawHeader("User-Agent", "MyPasswordManager/1.0");
+    req.setRawHeader("User-Agent", "JaPass/0.1");
 
     auto *reply = networkAccessManager->get(req);
 
@@ -801,6 +801,11 @@ void MainWindow::on_healthcheck_check_clicked()
         if (QWidget *w = child->widget()) w->deleteLater();
         delete child;
     }
+
+    //Creates a fresh status label that stays at the top
+    QLabel *statusLabel = new QLabel("Initializing...", ui->scrollAreaWidgetContents_2);
+    statusLabel->setStyleSheet("font-weight: bold; color: white;"); //make it look different
+    layout->addWidget(statusLabel);
 
     //Load entries from DB
     QSqlDatabase db = DatabaseManager::instance().db();
