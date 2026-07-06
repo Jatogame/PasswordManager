@@ -1,6 +1,6 @@
 ## About this Project
 
-**PasswordManager** is a simple password manager developed as part of a university software project. 
+**JaPass** is a simple password manager developed as part of a university software project. 
 The goal of the project is to securely store and manage passwords locally.
 
 The project is implemented mostly in **C++**, uses the **Qt** framework for the user interface, 
